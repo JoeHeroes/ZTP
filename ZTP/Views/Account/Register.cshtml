@@ -1,0 +1,34 @@
+﻿@model ZTP.Models.DTO.RegisterUserDto
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h3>Register Account</h3>
+@ViewBag.msg
+<form method="post" action="@Url.Action("RegisterUser", "Account")">
+    <table border="0" cellpadding="2" cellspacing="2">
+        <tr>
+            <div asp-validation-summary="All"></div>
+            <td>Email</td>
+            <td><input type="text" asp-for="Email"></td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td>Confirm Password</td>
+            <td><input type="password" name="confirmPassword"></td>
+        </tr>
+        <tr>
+            <td>User Name</td>
+            <td><input type="text" asp-for="UserName"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" value="Register"></td>
+        </tr>
+    </table>
+</form>
+

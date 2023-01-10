@@ -1,0 +1,27 @@
+﻿@model ZTP.Models.DTO.LoginDto
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h3>Login</h3>
+
+
+<form method="post" action="@Url.Action("LoginUser", "Account")">
+    @ViewBag.msg
+    <table border="0" cellpadding="2" cellspacing="2">
+        <tr>
+            <div asp-validation-summary="All"></div>
+            <td>Email</td>
+            <td><input type="text" asp-for="Email"></td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" value="Login"></td>
+        </tr>
+    </table>
+</form>
