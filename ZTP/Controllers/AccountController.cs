@@ -31,6 +31,7 @@ namespace ZTP.Controllers
         {
             return View();
         }
+
         [Route("Logout")]
         public IActionResult Logout()
         {
@@ -45,7 +46,6 @@ namespace ZTP.Controllers
             ViewBag.username = HttpContext.Session.GetString("name");
             return View("Welcome");
         }
-
 
         [HttpPost]
         [Route("RegisterUser")]
@@ -107,6 +107,30 @@ namespace ZTP.Controllers
                 return RedirectToAction("Welcome");
             }
             return View(dto);
+        }
+
+        [Route("ChangeDifficulty")]
+        public IActionResult ChangeDifficulty(int difficultyNumber)
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
+            User user = dbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
+            if (difficultyNumber == 1)
+            {
+                user.Difficulty = Difficulty.Easy;
+            }
+            else if (difficultyNumber == 2)
+            {
+                user.Difficulty = Difficulty.Normal;
+            }
+            else if (difficultyNumber == 3)
+            {
+                user.Difficulty = Difficulty.Hard;
+            }
+
+            dbContext.Update(user);
+            dbContext.SaveChangesAsync();
+
+            return RedirectToAction("Learn", "Words");
         }
     }
 }

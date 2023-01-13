@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ZTP.DesignPatterns;
 using ZTP.Models;
 using ZTP.Models.Enum;
 using ZTP.Models.ModelView;
@@ -24,7 +25,7 @@ namespace ZTP.Controllers
 
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Words.ToListAsync());
+            return View(await _context.Words.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -139,14 +140,14 @@ namespace ZTP.Controllers
             {
                 _context.Words.Remove(word);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool WordExists(int id)
         {
-          return _context.Words.Any(e => e.Id == id);
+            return _context.Words.Any(e => e.Id == id);
         }
 
         /// <summary>
@@ -174,19 +175,24 @@ namespace ZTP.Controllers
 
             return View();
         }
+
         public IActionResult Test(int id)
         {
             id = 1;
-            var test = _context.Words.FirstOrDefault(x => x.Id == id);
             _contextState.ChangedState(new LearningState());
-            return View(test);
+            AnswersQuestions answers = new AnswersQuestions(_context);
+
+            return View(answers.GetQuestion());
         }
+
         public IActionResult Learn(int id)
         {
             id = 1;
             var learn = _context.Words.FirstOrDefault(x => x.Id == id);
             _contextState.ChangedState(new TestingState());
-            return View(learn);
+            AnswersQuestions answers = new AnswersQuestions(_context);
+
+            return View(answers.GetQuestion());
         }
     }
 }
