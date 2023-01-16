@@ -5,21 +5,44 @@ namespace ZTP.DesignPatterns.Builder
     public class AnswerBuilderNormal : AnswerBuilder
     {
         private readonly ZTPDbContext _context;
+        private int _userId;
+
         public List<Word> AnswerWords { get; set; }
         public Word CorrectAnswer { get; set; }
 
-        public AnswerBuilderNormal(ZTPDbContext context)
+        public AnswerBuilderNormal(ZTPDbContext context, int userId)
         {
             _context = context;
             AnswerWords = new List<Word>();
+            _userId = userId;
         }
 
         public Word BuildWord()
         {
-            Random random = new Random();
-            int number = random.Next(8) + 2;
+            List<int> userWord = _context.UserWords.Where(x => x.UserId == _userId).Select(x => x.WordId).ToList();
+            if (AnswerWords.Count != 0)
+            {
+                userWord.AddRange(AnswerWords.Select(x => x.Id));
+            }
 
-            return _context.Words.Where(x => x.Id == number).FirstOrDefault();
+            Random random = new Random();
+            int number = random.Next(3);
+
+            Word word = null;
+            if (number % 3 == 0)
+            {
+                word = _context.Words.Where(x => !userWord.Contains(x.Id)).FirstOrDefault();
+            }
+            else if (number % 3 == 1)
+            {
+                word = _context.Words.Where(x => !userWord.Contains(x.Id)).Skip(2).FirstOrDefault();
+            }
+            else if (number % 3 == 2)
+            {
+                word = _context.Words.Where(x => !userWord.Contains(x.Id)).Skip(5).FirstOrDefault();
+            }
+
+            return word;
         }
 
         public void GetResult()

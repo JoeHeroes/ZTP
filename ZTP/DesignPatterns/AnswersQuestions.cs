@@ -15,7 +15,7 @@ namespace ZTP.DesignPatterns
 
         public QuestionViewModel GetQuestion()
         {
-            Answers answers = new Answers(_context);
+            Answers answers = new Answers(_context, 1);
 
             QuestionViewModel questionViewModel = new QuestionViewModel();
             questionViewModel.Answers = answers.GetAnswersList();

@@ -9,14 +9,16 @@ namespace ZTP.DesignPatterns
     {
         private List<Word> _answers;
         private readonly ZTPDbContext _context;
+        private int _userId;
 
         public Word CorrectAnswer { get; set; }
         private AnswerDirector _director;
 
-        public Answers(ZTPDbContext context)
+        public Answers(ZTPDbContext context, int userId)
         {
             _director = new AnswerDirector();
             _context = context;
+            _userId = userId;
         }
 
         private void DecorateAnswers(AnswersDecorator answersDecorator)
@@ -26,12 +28,12 @@ namespace ZTP.DesignPatterns
 
         public List<Word> GetAnswersList()
         {
-            User user = _context.Users.Where(x => x.Id == 1).FirstOrDefault();
+            User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
             Difficulty difficulty = user.Difficulty;
 
             if (difficulty == Difficulty.Easy)
             {
-                AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context);
+                AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context, _userId);
                 _director.Construct(builderEasy);
                 _answers = builderEasy.AnswerWords;
                 CorrectAnswer = builderEasy.CorrectAnswer;
@@ -41,7 +43,7 @@ namespace ZTP.DesignPatterns
             }
             else if (difficulty == Difficulty.Normal)
             {
-                AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context);
+                AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context, _userId);
                 _director.Construct(builderNormal);
                 _answers = builderNormal.AnswerWords;
                 CorrectAnswer = builderNormal.CorrectAnswer;
@@ -51,7 +53,7 @@ namespace ZTP.DesignPatterns
             }
             else if (difficulty == Difficulty.Hard)
             {
-                AnswerBuilderHard builderHard = new AnswerBuilderHard(_context);
+                AnswerBuilderHard builderHard = new AnswerBuilderHard(_context, _userId);
                 _director.Construct(builderHard);
                 _answers = builderHard.AnswerWords;
                 CorrectAnswer = builderHard.CorrectAnswer;
