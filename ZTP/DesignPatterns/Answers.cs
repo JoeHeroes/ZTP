@@ -2,6 +2,7 @@
 using ZTP.DesignPatterns.Decorator;
 using ZTP.Models;
 using ZTP.Models.Enum;
+using ZTP.State;
 
 namespace ZTP.DesignPatterns
 {
@@ -10,18 +11,20 @@ namespace ZTP.DesignPatterns
         private List<Word> _answers;
         private readonly ZTPDbContext _context;
         private int _userId;
-
-        public Word CorrectAnswer { get; set; }
+        private Context _contextState;
         private AnswerDirector _director;
 
-        public Answers(ZTPDbContext context, int userId)
+        public Word CorrectAnswer { get; set; }
+
+        public Answers(ZTPDbContext context, int userId, Context contextState)
         {
             _director = new AnswerDirector();
             _context = context;
             _userId = userId;
+            _contextState = contextState;
         }
 
-        private void DecorateAnswers(AnswersDecorator answersDecorator)
+        private void DecorateAnswers(IAnswersDecorator answersDecorator)
         {
             _answers = answersDecorator.DecorateAnswers(_answers);
         }
@@ -58,6 +61,14 @@ namespace ZTP.DesignPatterns
                 _answers = builderHard.AnswerWords;
                 CorrectAnswer = builderHard.CorrectAnswer;
             }
+
+            UserWord userWord = new UserWord();
+            userWord.UserId = _userId;
+            userWord.WordId = CorrectAnswer.Id;
+            userWord.IsLearned = false;
+
+            _context.UserWords.Add(userWord);
+            _context.SaveChanges();
 
             return _answers;
         }

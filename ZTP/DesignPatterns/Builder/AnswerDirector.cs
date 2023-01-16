@@ -2,7 +2,7 @@
 {
     public class AnswerDirector
     {
-        public void Construct(AnswerBuilder builder)
+        public void Construct(IAnswerBuilder builder)
         {
             builder.GetResult();
         }

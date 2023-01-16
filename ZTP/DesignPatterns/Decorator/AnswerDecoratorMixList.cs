@@ -2,7 +2,7 @@
 
 namespace ZTP.DesignPatterns.Decorator
 {
-    public class AnswerDecoratorMixList : AnswersDecorator
+    public class AnswerDecoratorMixList : IAnswersDecorator
     {
         public List<Word> DecorateAnswers(List<Word> words)
         {

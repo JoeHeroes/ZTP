@@ -1,12 +1,8 @@
-﻿using Microsoft.Build.Evaluation;
-
-namespace ZTP.State
+﻿namespace ZTP.State
 {
     public class Context
     {
-       
         private State State { get; set; }
-
 
         public void ChangedState(State state)
         {
