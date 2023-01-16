@@ -11,12 +11,10 @@ namespace ZTP.Seeder
             _dbContext = dbContext;
         }
 
-
         public void Seed()
         {
             if (_dbContext.Database.CanConnect())
             {
-
                 if (!_dbContext.Words.Any())
                 {
                     var info = GetWords();
@@ -25,7 +23,6 @@ namespace ZTP.Seeder
                 }
             }
         }
-
 
         public IEnumerable<Word> GetWords()
         {
@@ -36,6 +33,41 @@ namespace ZTP.Seeder
                     PolishWord = "Zolty",
                     ForeignLanguageWord = "Yellow"
                 },
+                new Word()
+                {
+                    PolishWord = "Zielony",
+                    ForeignLanguageWord = "Green"
+                },
+                new Word()
+                {
+                    PolishWord = "Czarny",
+                    ForeignLanguageWord = "Black"
+                },
+                new Word()
+                {
+                    PolishWord = "Biały",
+                    ForeignLanguageWord = "White"
+                },
+                new Word()
+                {
+                    PolishWord = "Różowy",
+                    ForeignLanguageWord = "Pink"
+                },
+                new Word()
+                {
+                    PolishWord = "Niebieski",
+                    ForeignLanguageWord = "Blue"
+                },
+                new Word()
+                {
+                    PolishWord = "Fioletowy",
+                    ForeignLanguageWord = "Purple"
+                },
+                new Word()
+                {
+                    PolishWord = "Pomarańczowy",
+                    ForeignLanguageWord = "Orange"
+                }
             };
         }
     }

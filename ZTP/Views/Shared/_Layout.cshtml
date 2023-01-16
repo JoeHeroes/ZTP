@@ -31,6 +31,16 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Test">Tryb testu</a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeDifficulty" asp-route-difficultyNumber="1">Easy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeDifficulty" asp-route-difficultyNumber="2">Normal</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeDifficulty" asp-route-difficultyNumber="3">Hard</a>
+                            </li>
                         }
 
                         <li class="nav-item">
@@ -39,7 +49,7 @@
 
 
 
-                        
+
                     </ul>
 
                     <partial name="_LoginPartial" />

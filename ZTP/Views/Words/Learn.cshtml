@@ -1,4 +1,4 @@
-﻿@model ZTP.Models.Word
+﻿@model ZTP.Models.ModelView.QuestionViewModel
 @{
     ViewData["Title"] = "Learn";
 }
@@ -9,11 +9,20 @@
 
 <div>
     <dl class="row">
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PolishWord)
+        <dd class="col-sm-10">
+            Correct Word: @Model.CorrectWord.PolishWord
         </dd>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ForeignLanguageWord)
-        </dd>
+        @foreach (Word word in Model.Answers)
+        {
+           <dd class="col-sm-10">
+               --------------------
+           </dd> 
+            <dd class="col-sm-10">
+                @word.PolishWord
+            </dd>
+            <dd class="col-sm-10">
+                @word.ForeignLanguageWord
+            </dd>
+        }
     </dl>
 </div>

@@ -4,6 +4,6 @@ namespace ZTP.DesignPatterns.Decorator
 {
     public interface AnswersDecorator
     {
-        public List<string> DecorateAnswers(List<string> words);
+        public List<Word> DecorateAnswers(List<Word> words);
     }
 }

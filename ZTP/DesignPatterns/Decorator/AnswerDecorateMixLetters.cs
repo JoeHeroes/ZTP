@@ -1,17 +1,21 @@
-﻿namespace ZTP.DesignPatterns.Decorator
+﻿using ZTP.Models;
+
+namespace ZTP.DesignPatterns.Decorator
 {
     public class AnswerDecorateMixLetters : AnswersDecorator
     {
-        public List<string> DecorateAnswers(List<string> words)
+        public List<Word> DecorateAnswers(List<Word> words)
         {
-            string correctWord = words.First();
-            List<string> answerList = new List<string>();
+            Word correctWord = words.First();
+            List<Word> answerList = new List<Word>();
             answerList.Add(correctWord);
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < words.Count - 1; i++)
             {
-                string mixWord = MixLetters(correctWord);
-                answerList.Add(mixWord);
+                Word temp = new Word();
+                temp.PolishWord = MixLetters(correctWord.PolishWord);
+                temp.ForeignLanguageWord = MixLetters(correctWord.ForeignLanguageWord);
+                answerList.Add(temp);
             }
 
             return answerList;
@@ -27,11 +31,11 @@
             }
 
             Random random = new Random();
-            int number = random.Next(word.Length) + 1;
+            int number = random.Next(word.Length - 2) + 1;
 
             for (int i = 0; i < number; i++)
             {
-                for (int j = 1; j < wordLength - 1; j++)
+                for (int j = 0; j < wordLength - 1; j++)
                 {
                     char temp = liters[j];
                     liters[j] = liters[j + 1];
@@ -39,7 +43,7 @@
                 }
             }
 
-            word = Convert.ToString(liters);
+            word = new String(liters);
 
             return word;
         }
