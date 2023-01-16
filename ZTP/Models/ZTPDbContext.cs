@@ -7,9 +7,10 @@ namespace ZTP.Models
         public ZTPDbContext(DbContextOptions options) : base(options)
         {
         }
+
         public DbSet<Word> Words { get; set; }
         public DbSet<User> Users { get; set; }
-
+        public DbSet<UserWord> UserWords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,5 @@ namespace ZTP.Models
               .Property(u => u.Email)
               .IsRequired();
         }
-
     }
 }
