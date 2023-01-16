@@ -2,7 +2,7 @@
 
 namespace ZTP.DesignPatterns.Builder
 {
-    public interface AnswerBuilder
+    public interface IAnswerBuilder
     {
         public Word BuildWord();
 

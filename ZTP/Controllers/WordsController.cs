@@ -176,21 +176,22 @@ namespace ZTP.Controllers
             return View();
         }
 
-        public IActionResult Test(int id)
+        public IActionResult Test()
         {
-            id = 1;
-            _contextState.ChangedState(new LearningState());
-            AnswersQuestions answers = new AnswersQuestions(_context);
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
+
+            _contextState.ChangedState(new TestingState());
+            AnswersQuestions answers = new AnswersQuestions(_context, userId, _contextState);
 
             return View(answers.GetQuestion());
         }
 
-        public IActionResult Learn(int id)
+        public IActionResult Learn()
         {
-            id = 1;
-            var learn = _context.Words.FirstOrDefault(x => x.Id == id);
-            _contextState.ChangedState(new TestingState());
-            AnswersQuestions answers = new AnswersQuestions(_context);
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
+
+            _contextState.ChangedState(new LearningState());
+            AnswersQuestions answers = new AnswersQuestions(_context, userId, _contextState);
 
             return View(answers.GetQuestion());
         }

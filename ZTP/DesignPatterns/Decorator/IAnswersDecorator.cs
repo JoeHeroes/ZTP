@@ -2,7 +2,7 @@
 
 namespace ZTP.DesignPatterns.Decorator
 {
-    public interface AnswersDecorator
+    public interface IAnswersDecorator
     {
         public List<Word> DecorateAnswers(List<Word> words);
     }
