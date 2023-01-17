@@ -8,6 +8,7 @@
         {
             throw new NotImplementedException();
         }
+
         public override float GetPoints()
         {
             return Points;
@@ -18,5 +19,4 @@
             Points = points;
         }
     }
-
 }

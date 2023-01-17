@@ -37,6 +37,7 @@ namespace ZTP.Controllers
         {
             HttpContext.Session.Remove("name");
             HttpContext.Session.Remove("id");
+
             return RedirectToAction("Login");
         }
 
@@ -44,6 +45,7 @@ namespace ZTP.Controllers
         public IActionResult Welcome()
         {
             ViewBag.username = HttpContext.Session.GetString("name");
+
             return View("Welcome");
         }
 
@@ -76,7 +78,9 @@ namespace ZTP.Controllers
 
                 return RedirectToAction("Welcome");
             }
+
             ViewBag.msg = "Invalid";
+
             return View("Register");
         }
 
@@ -102,16 +106,24 @@ namespace ZTP.Controllers
                     ViewBag.msg = "Email or password is invalid.";
                     return View("Login");
                 }
+
                 HttpContext.Session.SetString("name", user.UserName);
                 HttpContext.Session.SetString("id", user.Id.ToString());
+
                 return RedirectToAction("Welcome");
             }
+
             return View(dto);
         }
 
         [Route("ChangeDifficulty")]
         public IActionResult ChangeDifficulty(int difficultyNumber)
         {
+            HttpContext.Session.Remove("numberOfQuestionsLearn");
+            HttpContext.Session.Remove("answersQuestionsLearn");
+            HttpContext.Session.Remove("numberOfQuestionsTest");
+            HttpContext.Session.Remove("answersQuestionsTest");
+
             int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
             User user = dbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
             if (difficultyNumber == 1)
@@ -130,7 +142,7 @@ namespace ZTP.Controllers
             dbContext.Update(user);
             dbContext.SaveChangesAsync();
 
-            return RedirectToAction("Learn", "Words");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
