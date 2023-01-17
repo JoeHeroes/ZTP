@@ -30,7 +30,7 @@ namespace ZTP.DesignPatterns.Decorator
             return answerList;
         }
 
-        public string MixLetters(string word)
+        private string MixLetters(string word)
         {
             int wordLength = word.Length;
             char[] liters = new char[wordLength];
@@ -57,7 +57,7 @@ namespace ZTP.DesignPatterns.Decorator
             return word;
         }
 
-        public string MixLettersSecond(string word)
+        private string MixLettersSecond(string word)
         {
             int wordLength = word.Length;
             char[] liters = new char[wordLength];

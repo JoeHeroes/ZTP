@@ -8,39 +8,84 @@ namespace ZTP.DesignPatterns
     public class AnswersQuestions
     {
         private readonly ZTPDbContext _context;
-        private IteratorQuestion _iterator;
         private int _userId;
-        private Context _contextState;
 
-        public List<QuestionViewModel> Questions { get; set; }
+        public Context ContextState;
+        public IteratorQuestion Iterator { get; set; }
 
-        public AnswersQuestions(ZTPDbContext context, int userId, Context contextState)
+        public AnswersQuestions(ZTPDbContext context, int userId)
         {
             _context = context;
-            Questions = new List<QuestionViewModel>();
-            _iterator = new IteratorQuestion(Questions);
             _userId = userId;
-            _contextState = contextState;
         }
 
-        public void GenerateQuestions()
+        public void GenerateQuestions(int number)
         {
-            for (int i = 0; i < 10; i++)
+            List<QuestionViewModel> Questions = new List<QuestionViewModel>();
+
+            for (int i = 0; i < number; i++)
             {
-                QuestionViewModel question = GetQuestion();
+                QuestionViewModel question = GetQuestionFromDB();
+                question.QuestionNumber = i + 1;
                 Questions.Add(question);
+            }
+
+            Iterator = new IteratorQuestion(Questions);
+
+            if (ContextState.CheckState() is LearningState)
+            {
+                Remove(Questions);
+            }
+            else
+            {
+                Update(Questions);
             }
         }
 
         public QuestionViewModel GetQuestion()
         {
-            Answers answers = new Answers(_context, _userId, _contextState);
+            if (!Iterator.IsDone())
+            {
+                QuestionViewModel currentQuestion = Iterator.Next();
+
+                return currentQuestion;
+            }
+
+            return null;
+        }
+
+        private QuestionViewModel GetQuestionFromDB()
+        {
+            Answers answers = new Answers(_context, _userId, ContextState);
 
             QuestionViewModel questionViewModel = new QuestionViewModel();
             questionViewModel.Answers = answers.GetAnswersList();
             questionViewModel.CorrectWord = answers.CorrectAnswer;
 
             return questionViewModel;
+        }
+
+        private void Remove(List<QuestionViewModel> questions)
+        {
+            foreach (var question in questions)
+            {
+                UserWord userWord = _context.UserWords.Where(x => x.UserId == _userId && x.WordId == question.CorrectWord.Id).FirstOrDefault();
+                _context.Remove(userWord);
+            }
+
+            _context.SaveChanges();
+        }
+
+        private void Update(List<QuestionViewModel> questions)
+        {
+            foreach (var question in questions)
+            {
+                UserWord userWord = _context.UserWords.Where(x => x.UserId == _userId && x.WordId == question.CorrectWord.Id).FirstOrDefault();
+                userWord.IsLearned = false;
+                _context.Update(userWord);
+            }
+
+            _context.SaveChanges();
         }
     }
 }

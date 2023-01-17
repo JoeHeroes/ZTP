@@ -6,13 +6,49 @@
 <h1>Test</h1>
 
 
-<div>
-    <dl class="row">
-        <dd class = "col-sm-10">
-            @*@Html.DisplayFor(model => model.PolishWord)*@
-        </dd>
-        <dd class = "col-sm-10">
-            @*@Html.DisplayFor(model => model.ForeignLanguageWord)*@
-        </dd>
-    </dl>
-</div>
+<h2 style="text-align: center">Question @Model.QuestionNumber/5</h2>
+<h2 style="text-align: center">Points @ViewBag.Points/100</h2>
+
+@if (ViewBag.NoAnswer != null)
+{
+    <h2 style="color: red; text-align: center;">@ViewBag.NoAnswer</h2>
+}
+
+@using (Html.BeginForm("Test", "Words", FormMethod.Post))
+{
+    <div class="maindiv">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @if (ViewBag.Lang == "pl")
+                {
+                    @Html.Raw("Select the word that corresponds to: " + @Model.CorrectWord.ForeignLanguageWord)
+                    ;
+                }
+                else
+                {
+                    @Html.Raw("Podaj słowo odpowiadające słowu: " + @Model.CorrectWord.PolishWord)
+                    ;
+                }
+
+            </div>
+        </div>
+        <div class="panel-group">
+            <a class="answerpanel">
+                <div class="panel-body">
+                    @if (ViewBag.Lang == "pl")
+                    {
+                        <input type="text" name="Answer" id="@Model.Answers[0].Id" />
+                    }
+                    else
+                    {
+                        <input type="text" name="Answer" id="@Model.Answers[0].Id" />
+                    }
+                </div>
+            </a>
+        </div>
+    </div>
+    @Html.HiddenFor(model => model.CorrectWord)
+    @Html.HiddenFor(model=>model.QuestionNumber)
+    @Html.HiddenFor(model=>model.Answer)
+    <input type="submit" class="btn btn-success" value="Submit" style="margin-top: 20px;" id="submitButton" />
+}

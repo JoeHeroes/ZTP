@@ -30,7 +30,7 @@ namespace ZTP.Seeder
             {
                 new Word()
                 {
-                    PolishWord = "zolty",
+                    PolishWord = "żołty",
                     ForeignLanguageWord = "yellow"
                 },
                 new Word()
@@ -132,6 +132,46 @@ namespace ZTP.Seeder
                 {
                     PolishWord = "szkoła",
                     ForeignLanguageWord = "school"
+                },
+                new Word()
+                {
+                    PolishWord = "plecak",
+                    ForeignLanguageWord = "backpack"
+                },
+                new Word()
+                {
+                    PolishWord = "laptop",
+                    ForeignLanguageWord = "laptop"
+                },
+                new Word()
+                {
+                    PolishWord = "cukier",
+                    ForeignLanguageWord = "sugar"
+                },
+                new Word()
+                {
+                    PolishWord = "piłka nożna",
+                    ForeignLanguageWord = "football"
+                },
+                new Word()
+                {
+                    PolishWord = "koszykówka",
+                    ForeignLanguageWord = "basketball"
+                },
+                new Word()
+                {
+                    PolishWord = "siatkówka",
+                    ForeignLanguageWord = "volleyball"
+                },
+                new Word()
+                {
+                    PolishWord = "praca",
+                    ForeignLanguageWord = "work"
+                },
+                new Word()
+                {
+                    PolishWord = "muzyka",
+                    ForeignLanguageWord = "music"
                 }
             };
         }

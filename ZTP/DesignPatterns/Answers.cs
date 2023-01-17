@@ -34,41 +34,57 @@ namespace ZTP.DesignPatterns
             User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
             Difficulty difficulty = user.Difficulty;
 
-            if (difficulty == Difficulty.Easy)
+            if (_contextState.CheckState() is LearningState)
             {
-                AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context, _userId);
-                _director.Construct(builderEasy);
-                _answers = builderEasy.AnswerWords;
-                CorrectAnswer = builderEasy.CorrectAnswer;
+                if (difficulty == Difficulty.Easy)
+                {
+                    AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context, _userId);
+                    _director.Construct(builderEasy);
+                    _answers = builderEasy.AnswerWords;
+                    CorrectAnswer = builderEasy.CorrectAnswer;
 
-                AnswerDecoratorMixList decoratorMixList = new AnswerDecoratorMixList();
-                DecorateAnswers(decoratorMixList);
-            }
-            else if (difficulty == Difficulty.Normal)
-            {
-                AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context, _userId);
-                _director.Construct(builderNormal);
-                _answers = builderNormal.AnswerWords;
-                CorrectAnswer = builderNormal.CorrectAnswer;
+                    AnswerDecoratorMixList decoratorMixList = new AnswerDecoratorMixList();
+                    DecorateAnswers(decoratorMixList);
+                }
+                else if (difficulty == Difficulty.Normal)
+                {
+                    AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context, _userId);
+                    _director.Construct(builderNormal);
+                    _answers = builderNormal.AnswerWords;
+                    CorrectAnswer = builderNormal.CorrectAnswer;
 
-                AnswerDecorateMixLetters decorateMixLetters = new AnswerDecorateMixLetters();
-                DecorateAnswers(decorateMixLetters);
+                    AnswerDecorateMixLetters decorateMixLetters = new AnswerDecorateMixLetters();
+                    DecorateAnswers(decorateMixLetters);
+                }
+                else if (difficulty == Difficulty.Hard)
+                {
+                    AnswerBuilderHard builderHard = new AnswerBuilderHard(_context, _userId);
+                    _director.Construct(builderHard);
+                    _answers = builderHard.AnswerWords;
+                    CorrectAnswer = builderHard.CorrectAnswer;
+                }
+
+                UserWord userWord = new UserWord();
+                userWord.UserId = _userId;
+                userWord.WordId = CorrectAnswer.Id;
+                userWord.IsLearned = false;
+
+                _context.UserWords.Add(userWord);
+                _context.SaveChanges();
             }
-            else if (difficulty == Difficulty.Hard)
+            else
             {
-                AnswerBuilderHard builderHard = new AnswerBuilderHard(_context, _userId);
+                AnswerBuilderTest builderHard = new AnswerBuilderTest(_context, _userId);
                 _director.Construct(builderHard);
                 _answers = builderHard.AnswerWords;
                 CorrectAnswer = builderHard.CorrectAnswer;
+
+                UserWord userWord = _context.UserWords.Where(x => x.UserId == _userId && x.WordId == CorrectAnswer.Id).FirstOrDefault();
+                userWord.IsLearned = true;
+
+                _context.UserWords.Update(userWord);
+                _context.SaveChanges();
             }
-
-            UserWord userWord = new UserWord();
-            userWord.UserId = _userId;
-            userWord.WordId = CorrectAnswer.Id;
-            userWord.IsLearned = false;
-
-            _context.UserWords.Add(userWord);
-            _context.SaveChanges();
 
             return _answers;
         }
