@@ -1,4 +1,5 @@
-﻿using ZTP.DesignPatterns.Builder;
+﻿using ZTP.Controllers;
+using ZTP.DesignPatterns.Builder;
 using ZTP.DesignPatterns.Decorator;
 using ZTP.Models;
 using ZTP.Models.Enum;
@@ -13,6 +14,8 @@ namespace ZTP.DesignPatterns
         private int _userId;
         private Context _contextState;
         private AnswerDirector _director;
+        private DatabaseConnection db;
+
 
         public Word CorrectAnswer { get; set; }
 
@@ -22,6 +25,7 @@ namespace ZTP.DesignPatterns
             _context = context;
             _userId = userId;
             _contextState = contextState;
+            this.db = new DatabaseConnection(this._context);
         }
 
         private void DecorateAnswers(IAnswersDecorator answersDecorator)
@@ -79,7 +83,7 @@ namespace ZTP.DesignPatterns
                 _answers = builderHard.AnswerWords;
                 CorrectAnswer = builderHard.CorrectAnswer;
 
-                UserWord userWord = _context.UserWords.Where(x => x.UserId == _userId && x.WordId == CorrectAnswer.Id).FirstOrDefault();
+                UserWord userWord = this.db.FindUserWord(_userId, CorrectAnswer.Id);
                 userWord.IsLearned = true;
 
                 _context.UserWords.Update(userWord);

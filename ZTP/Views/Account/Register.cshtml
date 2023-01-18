@@ -26,6 +26,15 @@
             <td><input type="text" asp-for="UserName"></td>
         </tr>
         <tr>
+            <td>Role</td>
+            <td>
+                <select asp-for="RoleId" class="form-select">
+                    <option value="1">User</option>
+                    <option value="2">Admin</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
             <td>&nbsp;</td>
             <td><input type="submit" value="Register"></td>
         </tr>

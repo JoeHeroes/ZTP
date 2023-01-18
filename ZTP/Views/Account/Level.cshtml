@@ -1,0 +1,10 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Level";
+}
+
+
+<div class="text-center">
+
+        <h2>@HttpContextAccessor.HttpContext.Session.GetString("level")</h2>
+</div>

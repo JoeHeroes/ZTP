@@ -15,26 +15,28 @@ namespace ZTP.Controllers
 
         private Context _contextState;
 
+        private DatabaseConnection db;
+
         public WordsController(ZTPDbContext context)
         {
             _context = context;
             _contextState = new Context();
+            this.db = new DatabaseConnection(this._context);
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Words.ToListAsync());
+            return View(this.db.GetWords());
         }
 
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null || _context.Words == null)
             {
                 return NotFound();
             }
 
-            var word = await _context.Words
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var word = this.db.GetWord((int)id);
             if (word == null)
             {
                 return NotFound();
@@ -50,25 +52,25 @@ namespace ZTP.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PolishWord,ForeignLanguageWord")] Word word)
+        public IActionResult Create([Bind("Id,PolishWord,ForeignLanguageWord")] Word word)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(word);
-                await _context.SaveChangesAsync();
+                this.db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(word);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null || _context.Words == null)
             {
                 return NotFound();
             }
 
-            var word = await _context.Words.FindAsync(id);
+            var word = this.db.GetWord((int)id);
             if (word == null)
             {
                 return NotFound();
@@ -78,7 +80,7 @@ namespace ZTP.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PolishWord,ForeignLanguageWord")] Word word)
+        public IActionResult Edit(int id, [Bind("Id,PolishWord,ForeignLanguageWord")] Word word)
         {
             if (id != word.Id)
             {
@@ -90,7 +92,7 @@ namespace ZTP.Controllers
                 try
                 {
                     _context.Update(word);
-                    await _context.SaveChangesAsync();
+                    this.db.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -127,19 +129,19 @@ namespace ZTP.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             if (_context.Words == null)
             {
                 return Problem("Entity set 'ZTPDbContext.Words'  is null.");
             }
-            var word = await _context.Words.FindAsync(id);
+            var word = this.db.GetWord(id);
             if (word != null)
             {
                 _context.Words.Remove(word);
             }
 
-            await _context.SaveChangesAsync();
+            this.db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
@@ -148,8 +150,7 @@ namespace ZTP.Controllers
             return _context.Words.Any(e => e.Id == id);
         }
 
-        /// <summary>
-        /// </summary>
+
         public IActionResult ChangeLanguage(string language)
         {
             switch (language)
@@ -170,8 +171,14 @@ namespace ZTP.Controllers
             HttpContext.Session.Remove("numberOfQuestionsLearn");
             HttpContext.Session.Remove("answersQuestionsLearn");
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Lang");
         }
+
+        public IActionResult Lang()
+        {
+            return View();
+        }
+
 
         public IActionResult Learn()
         {
@@ -211,7 +218,7 @@ namespace ZTP.Controllers
             }
 
             string lang = HttpContext.Session.GetString("lang");
-            if (lang != null || lang == "eng")
+            if (lang != "pl" || lang == "eng")
             {
                 ViewBag.Lang = "eng";
             }
@@ -233,7 +240,7 @@ namespace ZTP.Controllers
             model.CorrectWord = question.CorrectWord;
 
             string lang = HttpContext.Session.GetString("lang");
-            if (lang != null || lang == "eng")
+            if (lang != "pl" || lang == "eng")
             {
                 ViewBag.Lang = "eng";
             }
@@ -361,7 +368,7 @@ namespace ZTP.Controllers
                 if (model.Answer == model.CorrectWord.PolishWord || model.Answer == model.CorrectWord.ForeignLanguageWord)
                 {
                     int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
-                    UserWord userWord = _context.UserWords.Where(x => x.UserId == userId && x.WordId == model.CorrectWord.Id).FirstOrDefault();
+                    UserWord userWord = db.FindUserWord(userId, model.CorrectWord.Id);
                     userWord.IsLearned = true;
                     _context.UserWords.Update(userWord);
                     _context.SaveChanges();

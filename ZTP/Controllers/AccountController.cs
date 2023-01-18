@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ZTP.Models;
 using ZTP.Models.DTO;
@@ -10,6 +11,8 @@ namespace ZTP.Controllers
     public class AccountController : Controller
     {
         private readonly ZTPDbContext dbContext;
+        private readonly DatabaseConnection db;
+
         private readonly IPasswordHasher<User> passwordHasherUser;
         private readonly Authentication authentications;
 
@@ -18,6 +21,7 @@ namespace ZTP.Controllers
             this.dbContext = dbContext;
             this.passwordHasherUser = passwordHasherUser;
             this.authentications = authentications;
+            this.db = new DatabaseConnection(this.dbContext);
         }
 
         [Route("Login")]
@@ -68,6 +72,7 @@ namespace ZTP.Controllers
                     PasswordHash = dto.Password,
                     Points = 0,
                     Difficulty = Difficulty.Normal,
+                    RoleId = dto.RoleId,
                 };
 
                 var hashedPass = this.passwordHasherUser.HashPassword(newUser, dto.Password);
@@ -107,6 +112,15 @@ namespace ZTP.Controllers
                     return View("Login");
                 }
 
+
+                if (user.RoleId == 1)
+                {
+                    HttpContext.Session.SetString("role", "User");
+                }
+                else
+                {
+                    HttpContext.Session.SetString("role", "Admin");
+                }
                 HttpContext.Session.SetString("name", user.UserName);
                 HttpContext.Session.SetString("id", user.Id.ToString());
 
@@ -124,8 +138,8 @@ namespace ZTP.Controllers
             HttpContext.Session.Remove("numberOfQuestionsTest");
             HttpContext.Session.Remove("answersQuestionsTest");
 
-            int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
-            User user = dbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
+            int id = int.Parse(HttpContext.Session.GetString("id"));
+            User user = db.GetUser(id);
             if (difficultyNumber == 1)
             {
                 user.Difficulty = Difficulty.Easy;
@@ -138,11 +152,19 @@ namespace ZTP.Controllers
             {
                 user.Difficulty = Difficulty.Hard;
             }
+            HttpContext.Session.SetString("level", user.Difficulty.ToString());
 
             dbContext.Update(user);
-            dbContext.SaveChangesAsync();
+            dbContext.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+
+            return View("Level");
+        }
+
+        [Route("Level")]
+        public IActionResult Level(int difficultyNumber)
+        {
+            return View();
         }
     }
 }

@@ -1,0 +1,17 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Language";
+}
+
+
+<div class="text-center">
+
+    @if (HttpContextAccessor.HttpContext.Session.GetString("lang") == "pl")
+    {
+        <h2>Polish</h2>
+    }
+    else
+    {
+        <h2>English</h2>
+    }
+</div>
