@@ -43,6 +43,9 @@ namespace ZTP.Migrations
                     b.Property<float>("Points")
                         .HasColumnType("real");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

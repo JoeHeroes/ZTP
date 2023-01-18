@@ -11,8 +11,8 @@ using ZTP.Models;
 namespace ZTP.Migrations
 {
     [DbContext(typeof(ZTPDbContext))]
-    [Migration("20230116170433_AddTableUserWord")]
-    partial class AddTableUserWord
+    [Migration("20230118133536_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,9 @@ namespace ZTP.Migrations
 
                     b.Property<float>("Points")
                         .HasColumnType("real");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()

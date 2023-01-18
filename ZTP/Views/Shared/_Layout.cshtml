@@ -45,13 +45,21 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="ChangeLanguage" asp-route-language="pl">Polish</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="ChangeLanguage" asp-route-language="en">English</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="ChangeLanguage" asp-route-language="eng">English</a>
                             </li>
                         }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Index">Words</a>
-                        </li>
+
+                        @if (@HttpContextAccessor.HttpContext.Session.GetString("role") == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Index">Words</a>
+                            </li>
+                        }
+
+
+
+                        
 
 
 

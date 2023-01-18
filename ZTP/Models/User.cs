@@ -11,7 +11,7 @@ namespace ZTP.Models
         public string PasswordHash { get; set; } = string.Empty;
         public Difficulty Difficulty { get; set; }
         public float Points { get; set; }
-
+        public int RoleId { get; set; }
 
         void ChangeDifficulty(Difficulty difficulty)
         {
