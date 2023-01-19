@@ -8,7 +8,7 @@ using ZTP.State;
 
 namespace ZTP.DesignPatterns
 {
-    public class Answers
+    public class Answers : IAnswers
     {
         private List<Word> _answers;
         private readonly ZTPDbContext _context;
@@ -28,12 +28,9 @@ namespace ZTP.DesignPatterns
             this.db = new DatabaseConnection(this._context);
         }
 
-        private void DecorateAnswers(IAnswersDecorator answersDecorator)
-        {
-            _answers = answersDecorator.DecorateAnswers(_answers);
-        }
 
-        public List<Word> GetAnswersList()
+
+        public override List<Word> GetAnswersList()
         {
             if (_contextState.CheckState() is LearningState)
             {
@@ -45,16 +42,14 @@ namespace ZTP.DesignPatterns
                     AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context, _userId);
                     _answers = _director.Construct(builderEasy);
 
-                    AnswerDecoratorMixList decoratorMixList = new AnswerDecoratorMixList();
-                    DecorateAnswers(decoratorMixList);
+                    
                 }
                 else if (difficulty == Difficulty.Normal)
                 {
                     AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context, _userId);
                     _answers = _director.Construct(builderNormal);
 
-                    AnswerDecorateMixLetters decorateMixLetters = new AnswerDecorateMixLetters();
-                    DecorateAnswers(decorateMixLetters);
+                   
                 }
                 else if (difficulty == Difficulty.Hard)
                 {

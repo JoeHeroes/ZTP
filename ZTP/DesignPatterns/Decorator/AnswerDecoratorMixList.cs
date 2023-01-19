@@ -1,11 +1,16 @@
-﻿using ZTP.Models;
+﻿using ZTP.Controllers;
+using ZTP.Models;
 
 namespace ZTP.DesignPatterns.Decorator
 {
-    public class AnswerDecoratorMixList : IAnswersDecorator
+    public class AnswerDecoratorMixList : AnswersDecorator
     {
-        public List<Word> DecorateAnswers(List<Word> words)
+        public AnswerDecoratorMixList(IAnswers answers) : base(answers)
         {
+        }
+        public override List<Word> GetAnswersList()
+        {
+            List<Word> words = answers.GetAnswersList();
             Random random = new Random();
             int randomNumber = random.Next(words.Count);
 

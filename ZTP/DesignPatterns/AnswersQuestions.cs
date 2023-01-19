@@ -1,5 +1,7 @@
-﻿using ZTP.DesignPatterns.Iterator;
+﻿using ZTP.DesignPatterns.Decorator;
+using ZTP.DesignPatterns.Iterator;
 using ZTP.Models;
+using ZTP.Models.Enum;
 using ZTP.Models.ModelView;
 using ZTP.State;
 
@@ -56,10 +58,24 @@ namespace ZTP.DesignPatterns
 
         private QuestionViewModel GetQuestionFromDB()
         {
+            User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
+            Difficulty difficulty = user.Difficulty;
             Answers answers = new Answers(_context, _userId, ContextState);
 
             QuestionViewModel questionViewModel = new QuestionViewModel();
-            questionViewModel.Answers = answers.GetAnswersList();
+            //względem wybranej trudności wybierz odpowiedni dekorator
+            if (Difficulty.Easy == user.Difficulty)
+            {
+                questionViewModel.Answers = new AnswerDecoratorMixList(answers).GetAnswersList();
+            }
+            else if(Difficulty.Normal == user.Difficulty)
+            {
+                questionViewModel.Answers = new AnswerDecorateMixLetters(answers).GetAnswersList();
+            }
+            else if(Difficulty.Hard == user.Difficulty) 
+            {
+                questionViewModel.Answers = answers.GetAnswersList();
+            }
             questionViewModel.CorrectWord = answers.CorrectAnswer;
 
             return questionViewModel;

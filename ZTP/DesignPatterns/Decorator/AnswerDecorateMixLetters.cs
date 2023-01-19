@@ -1,16 +1,23 @@
-﻿using ZTP.Models;
+﻿using NuGet.Packaging.Signing;
+using System.Collections.Generic;
+using ZTP.Models;
 
 namespace ZTP.DesignPatterns.Decorator
 {
-    public class AnswerDecorateMixLetters : IAnswersDecorator
+    public class AnswerDecorateMixLetters : AnswersDecorator
     {
-        public List<Word> DecorateAnswers(List<Word> words)
+        protected Word correctWord { get; set; }
+        public AnswerDecorateMixLetters(IAnswers _answers) : base(_answers)
         {
-            Word correctWord = words.First();
+            List<Word> answr = base.answers.GetAnswersList();
+            correctWord = base.answers.GetAnswersList().First();
+        }
+        public override List<Word> GetAnswersList()
+        {
             List<Word> answerList = new List<Word>();
             answerList.Add(correctWord);
 
-            for (int i = 0; i < words.Count - 1; i++)
+            for (int i = 0; i < base.answers.GetAnswersList().Count - 1; i++)
             {
                 Word temp = new Word();
                 temp.PolishWord = MixLetters(correctWord.PolishWord);
