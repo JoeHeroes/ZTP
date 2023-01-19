@@ -17,7 +17,6 @@ namespace ZTP.DesignPatterns
         private AnswerDirector _director;
         private DatabaseConnection db;
 
-
         public Word CorrectAnswer { get; set; }
 
         public Answers(ZTPDbContext context, int userId, Context contextState)
@@ -36,17 +35,15 @@ namespace ZTP.DesignPatterns
 
         public List<Word> GetAnswersList()
         {
-            User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
-            Difficulty difficulty = user.Difficulty;
-
             if (_contextState.CheckState() is LearningState)
             {
+                User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
+                Difficulty difficulty = user.Difficulty;
+
                 if (difficulty == Difficulty.Easy)
                 {
                     AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context, _userId);
-                    _director.Construct(builderEasy);
-                    _answers = builderEasy.AnswerWords;
-                    CorrectAnswer = builderEasy.CorrectAnswer;
+                    _answers = _director.Construct(builderEasy);
 
                     AnswerDecoratorMixList decoratorMixList = new AnswerDecoratorMixList();
                     DecorateAnswers(decoratorMixList);
@@ -54,9 +51,7 @@ namespace ZTP.DesignPatterns
                 else if (difficulty == Difficulty.Normal)
                 {
                     AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context, _userId);
-                    _director.Construct(builderNormal);
-                    _answers = builderNormal.AnswerWords;
-                    CorrectAnswer = builderNormal.CorrectAnswer;
+                    _answers = _director.Construct(builderNormal);
 
                     AnswerDecorateMixLetters decorateMixLetters = new AnswerDecorateMixLetters();
                     DecorateAnswers(decorateMixLetters);
@@ -64,11 +59,10 @@ namespace ZTP.DesignPatterns
                 else if (difficulty == Difficulty.Hard)
                 {
                     AnswerBuilderHard builderHard = new AnswerBuilderHard(_context, _userId);
-                    _director.Construct(builderHard);
-                    _answers = builderHard.AnswerWords;
-                    CorrectAnswer = builderHard.CorrectAnswer;
+                    _answers = _director.Construct(builderHard);
                 }
 
+                CorrectAnswer = _answers[0];
                 UserWord userWord = new UserWord();
                 userWord.UserId = _userId;
                 userWord.WordId = CorrectAnswer.Id;
@@ -80,9 +74,8 @@ namespace ZTP.DesignPatterns
             else
             {
                 AnswerBuilderTest builderHard = new AnswerBuilderTest(_context, _userId);
-                _director.Construct(builderHard);
-                _answers = builderHard.AnswerWords;
-                CorrectAnswer = builderHard.CorrectAnswer;
+                _answers = _director.Construct(builderHard);
+                CorrectAnswer = _answers[0];
 
                 UserWord userWord = this.db.FindUserWord(_userId, CorrectAnswer.Id);
                 userWord.IsLearned = true;

@@ -1,10 +1,12 @@
-﻿namespace ZTP.DesignPatterns.Builder
+﻿using ZTP.Models;
+
+namespace ZTP.DesignPatterns.Builder
 {
     public class AnswerDirector
     {
-        public void Construct(IAnswerBuilder builder)
+        public List<Word> Construct(IAnswerBuilder builder)
         {
-            builder.GetResult();
+            return builder.GetResult();
         }
     }
 }
