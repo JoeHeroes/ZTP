@@ -9,8 +9,11 @@ namespace ZTP.DesignPatterns.Decorator
         protected Word correctWord { get; set; }
         public AnswerDecorateMixLetters(IAnswers _answers) : base(_answers)
         {
-            List<Word> answr = base.answers.GetAnswersList();
-            correctWord = base.answers.GetAnswersList().First();
+
+            var answersList = base.answers.GetAnswersList();
+
+            correctWord = answersList.First();
+
         }
         public override List<Word> GetAnswersList()
         {

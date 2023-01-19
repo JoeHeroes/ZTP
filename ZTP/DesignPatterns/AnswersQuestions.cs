@@ -60,23 +60,26 @@ namespace ZTP.DesignPatterns
         {
             User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
             Difficulty difficulty = user.Difficulty;
-            Answers answers = new Answers(_context, _userId, ContextState);
+            Answers answers = null;
 
             QuestionViewModel questionViewModel = new QuestionViewModel();
             //względem wybranej trudności wybierz odpowiedni dekorator
             if (Difficulty.Easy == user.Difficulty)
             {
-                questionViewModel.Answers = new AnswerDecoratorMixList(answers).GetAnswersList();
+                questionViewModel.Answers = new AnswerDecoratorMixList(answers= new Answers(_context, _userId, ContextState)).GetAnswersList();
+                questionViewModel.CorrectWord = answers.CorrectAnswer;
             }
             else if(Difficulty.Normal == user.Difficulty)
             {
-                questionViewModel.Answers = new AnswerDecorateMixLetters(answers).GetAnswersList();
+                questionViewModel.Answers = new AnswerDecorateMixLetters(answers= new Answers(_context, _userId, ContextState)).GetAnswersList();
+                questionViewModel.CorrectWord = questionViewModel.Answers.First();
             }
             else if(Difficulty.Hard == user.Difficulty) 
             {
+                answers = new Answers(_context, _userId, ContextState);
                 questionViewModel.Answers = answers.GetAnswersList();
+                questionViewModel.CorrectWord = answers.CorrectAnswer;
             }
-            questionViewModel.CorrectWord = answers.CorrectAnswer;
 
             return questionViewModel;
         }
