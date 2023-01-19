@@ -11,7 +11,7 @@ using ZTP.Models;
 namespace ZTP.Migrations
 {
     [DbContext(typeof(ZTPDbContext))]
-    [Migration("20230118133536_Init")]
+    [Migration("20230118214221_Init")]
     partial class Init
     {
         /// <inheritdoc />

@@ -1,6 +1,7 @@
 ﻿using ZTP.Controllers;
 using ZTP.DesignPatterns.Builder;
 using ZTP.DesignPatterns.Decorator;
+using ZTP.Fascade;
 using ZTP.Models;
 using ZTP.Models.Enum;
 using ZTP.State;

@@ -2,9 +2,15 @@
 @{
     ViewData["Title"] = "Level";
 }
-
+<br/>
+<br/>
+<h1 style="text-align: center">Select Difficult Level</h1>
+<br/>
 
 <div class="text-center">
 
-        <h2>@HttpContextAccessor.HttpContext.Session.GetString("level")</h2>
+    <a href='@Url.Action("ChangeDifficulty", "Account", new { difficultyNumber = 1})' class="btn btn-primary">Easy</a>
+    <a href='@Url.Action("ChangeDifficulty", "Account", new { difficultyNumber = 2})' class="btn btn-primary">Normal</a>
+    <a href='@Url.Action("ChangeDifficulty", "Account", new { difficultyNumber = 3})' class="btn btn-primary">Hard</a>
+
 </div>

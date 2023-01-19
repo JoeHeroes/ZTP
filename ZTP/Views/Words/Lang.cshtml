@@ -2,16 +2,12 @@
 @{
     ViewData["Title"] = "Language";
 }
-
+<br/>
+<br/>
+<h1 style="text-align: center">Select Language</h1>
+<br/>
 
 <div class="text-center">
-
-    @if (HttpContextAccessor.HttpContext.Session.GetString("lang") == "pl")
-    {
-        <h2>Polish</h2>
-    }
-    else
-    {
-        <h2>English</h2>
-    }
+    <a href='@Url.Action("ChangeLanguage", "Words", new { language = "pl"})' class="btn btn-primary">Polish</a>
+    <a href='@Url.Action("ChangeLanguage", "Words", new { language = "eng"})' class="btn btn-primary">English</a>
 </div>

@@ -25,28 +25,21 @@
                         @if (@HttpContextAccessor.HttpContext.Session.GetString("name") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Learn">Tryb nauki</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Learn">Study</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Test">Tryb testu</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Test">Test</a>
                             </li>
 
+                            
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeDifficulty" asp-route-difficultyNumber="1">Easy</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Level">Level</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeDifficulty" asp-route-difficultyNumber="2">Normal</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="Lang">Language</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeDifficulty" asp-route-difficultyNumber="3">Hard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="ChangeLanguage" asp-route-language="pl">Polish</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Words" asp-action="ChangeLanguage" asp-route-language="eng">English</a>
-                            </li>
+
                         }
 
 
@@ -80,7 +73,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - ZTP - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - ZTP
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

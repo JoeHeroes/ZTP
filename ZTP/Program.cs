@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ZTP.Fascade;
 using ZTP.Models;
 using ZTP.Seeder;
 
@@ -50,6 +51,8 @@ builder.Services.AddHttpContextAccessor();
 //DbContext
 builder.Services.AddDbContext<ZTPDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 var app = builder.Build();
 

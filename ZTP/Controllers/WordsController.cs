@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using ZTP.DesignPatterns;
+using ZTP.Fascade;
 using ZTP.Models;
 using ZTP.Models.Enum;
 using ZTP.Models.ModelView;
@@ -11,32 +12,30 @@ namespace ZTP.Controllers
 {
     public class WordsController : Controller
     {
-        private readonly ZTPDbContext _context;
-
-        private Context _contextState;
-
-        private DatabaseConnection db;
+        private readonly Context contextState;
+        private readonly DatabaseConnection database;
+        private readonly ZTPDbContext context;
 
         public WordsController(ZTPDbContext context)
         {
-            _context = context;
-            _contextState = new Context();
-            this.db = new DatabaseConnection(this._context);
+            this.contextState = new Context();
+            this.context = context;
+            this.database = new DatabaseConnection(context);
         }
 
         public IActionResult Index()
         {
-            return View(this.db.GetWords());
+            return View(this.database.GetWords());
         }
 
         public IActionResult Details(int? id)
         {
-            if (id == null || _context.Words == null)
+            if (id == null || this.database.GetWords() == null)
             {
                 return NotFound();
             }
 
-            var word = this.db.GetWord((int)id);
+            var word = this.database.GetWord((int)id);
             if (word == null)
             {
                 return NotFound();
@@ -56,8 +55,8 @@ namespace ZTP.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(word);
-                this.db.SaveChanges();
+                this.database.AddWord(word);
+                this.database.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             return View(word);
@@ -65,12 +64,12 @@ namespace ZTP.Controllers
 
         public IActionResult Edit(int? id)
         {
-            if (id == null || _context.Words == null)
+            if (id == null || this.database.GetWords() == null)
             {
                 return NotFound();
             }
 
-            var word = this.db.GetWord((int)id);
+            var word = this.database.GetWord((int)id);
             if (word == null)
             {
                 return NotFound();
@@ -91,8 +90,8 @@ namespace ZTP.Controllers
             {
                 try
                 {
-                    _context.Update(word);
-                    this.db.SaveChanges();
+                    this.database.UpdateWord(word);
+                    this.database.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -110,15 +109,14 @@ namespace ZTP.Controllers
             return View(word);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
-            if (id == null || _context.Words == null)
+            if (id == null || this.database.GetWords == null)
             {
                 return NotFound();
             }
 
-            var word = await _context.Words
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var word = this.database.GetWord((int)id);
             if (word == null)
             {
                 return NotFound();
@@ -131,25 +129,24 @@ namespace ZTP.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            if (_context.Words == null)
+            if (this.database.GetWords == null)
             {
                 return Problem("Entity set 'ZTPDbContext.Words'  is null.");
             }
-            var word = this.db.GetWord(id);
+            var word = this.database.GetWord((int)id);
             if (word != null)
             {
-                _context.Words.Remove(word);
+                this.database.RemoveWord(word);
             }
 
-            this.db.SaveChanges();
+            this.database.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         private bool WordExists(int id)
         {
-            return _context.Words.Any(e => e.Id == id);
+            return this.database.AnyWord(id);
         }
-
 
         public IActionResult ChangeLanguage(string language)
         {
@@ -179,22 +176,21 @@ namespace ZTP.Controllers
             return View();
         }
 
-
         public IActionResult Learn()
         {
             HttpContext.Session.Remove("numberOfQuestionsTest");
             HttpContext.Session.Remove("answersQuestionsTest");
             int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
 
-            _contextState.ChangedState(new LearningState());
+            contextState.ChangedState(new LearningState());
 
             string answersString = HttpContext.Session.GetString("answersQuestionsLearn");
             AnswersQuestions answersQuestions;
             QuestionViewModel question;
             if (answersString == null)
             {
-                answersQuestions = new AnswersQuestions(_context, userId);
-                answersQuestions.ContextState = _contextState;
+                answersQuestions = new AnswersQuestions(context, userId);
+                answersQuestions.ContextState = contextState;
                 answersQuestions.GenerateQuestions(5);
 
                 question = answersQuestions.Iterator.First();
@@ -254,13 +250,13 @@ namespace ZTP.Controllers
                 if (model.Answer == model.CorrectWord.PolishWord || model.Answer == model.CorrectWord.ForeignLanguageWord)
                 {
                     int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
-                    UserWord userWord = new UserWord();
+                    UserWord userWord = new ();
                     userWord.UserId = userId;
                     userWord.WordId = model.CorrectWord.Id;
                     userWord.IsLearned = false;
 
-                    _context.UserWords.Add(userWord);
-                    _context.SaveChanges();
+                    this.database.AddUserWord(userWord);
+                    this.database.SaveChanges();
 
                     return RedirectToAction("Learn");
                 }
@@ -289,22 +285,22 @@ namespace ZTP.Controllers
             HttpContext.Session.Remove("answersQuestionsLearn");
             int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
 
-            _contextState.ChangedState(new TestingState());
+            contextState.ChangedState(new TestingState());
 
             string answersString = HttpContext.Session.GetString("answersQuestionsTest");
             AnswersQuestions answersQuestions;
             QuestionViewModel question;
             if (answersString == null)
             {
-                List<int> ints = _context.UserWords.Where(x => x.UserId == userId && !x.IsLearned).Select(x => x.Id).ToList();
+                List<int> ints = this.database.FindUserWordInts(userId);
                 if (ints.Count < 5)
                 {
                     HttpContext.Session.Remove("answersQuestionsTest");
                     return RedirectToAction("TestToEarly");
                 }
 
-                answersQuestions = new AnswersQuestions(_context, userId);
-                answersQuestions.ContextState = _contextState;
+                answersQuestions = new AnswersQuestions(context, userId);
+                answersQuestions.ContextState = contextState;
                 answersQuestions.GenerateQuestions(5);
 
                 question = answersQuestions.Iterator.First();
@@ -368,10 +364,11 @@ namespace ZTP.Controllers
                 if (model.Answer == model.CorrectWord.PolishWord || model.Answer == model.CorrectWord.ForeignLanguageWord)
                 {
                     int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
-                    UserWord userWord = db.FindUserWord(userId, model.CorrectWord.Id);
+                    UserWord userWord = this.database.FindUserWord(userId, model.CorrectWord.Id);
                     userWord.IsLearned = true;
-                    _context.UserWords.Update(userWord);
-                    _context.SaveChanges();
+
+                    this.database.UpdateUserWord(userWord);
+                    this.database.SaveChanges();
 
                     int? points = HttpContext.Session.GetInt32("points");
                     points += 20;
@@ -398,7 +395,7 @@ namespace ZTP.Controllers
 
             int? points = HttpContext.Session.GetInt32("points");
             int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
-            User user = _context.Users.Where(x => x.Id == userId).FirstOrDefault();
+            User user = this.database.GetUserById(userId);
 
             user.Points += (int)points;
 
@@ -411,8 +408,8 @@ namespace ZTP.Controllers
                 user.Difficulty = Difficulty.Hard;
             }
 
-            _context.Users.Update(user);
-            _context.SaveChanges();
+            this.database.UpdateUser(user);
+            this.database.SaveChanges();
 
             ViewBag.Points = points;
 

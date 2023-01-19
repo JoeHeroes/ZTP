@@ -9,7 +9,6 @@
             this.State = state;
             this.State.SetContext(this);
         }
-
         public State CheckState()
         {
             return State;

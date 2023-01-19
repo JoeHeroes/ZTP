@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ZTP.Fascade;
 using ZTP.Models;
 using ZTP.Models.DTO;
 using ZTP.Models.Enum;
@@ -10,18 +10,18 @@ namespace ZTP.Controllers
     [Route("Account")]
     public class AccountController : Controller
     {
-        private readonly ZTPDbContext dbContext;
-        private readonly DatabaseConnection db;
-
+        
         private readonly IPasswordHasher<User> passwordHasherUser;
         private readonly Authentication authentications;
+        private readonly DatabaseConnection database;
+        private readonly ZTPDbContext context;
 
-        public AccountController(ZTPDbContext dbContext, IPasswordHasher<User> passwordHasherUser, Authentication authentications)
+        public AccountController(IPasswordHasher<User> passwordHasherUser, Authentication authentications, ZTPDbContext context)
         {
-            this.dbContext = dbContext;
             this.passwordHasherUser = passwordHasherUser;
             this.authentications = authentications;
-            this.db = new DatabaseConnection(this.dbContext);
+            this.database = new DatabaseConnection(context);
+            this.context = context;
         }
 
         [Route("Login")]
@@ -78,8 +78,10 @@ namespace ZTP.Controllers
                 var hashedPass = this.passwordHasherUser.HashPassword(newUser, dto.Password);
 
                 newUser.PasswordHash = hashedPass;
-                this.dbContext.Users.Add(newUser);
-                this.dbContext.SaveChanges();
+                this.database.AddUser(newUser);
+                this.database.SaveChanges();
+
+
 
                 return RedirectToAction("Welcome");
             }
@@ -95,9 +97,7 @@ namespace ZTP.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = this.dbContext
-                                .Users
-                                .FirstOrDefault(u => u.Email == dto.Email);
+                var user = this.database.GetUserByEmail(dto.Email);
 
                 if (user is null)
                 {
@@ -111,7 +111,6 @@ namespace ZTP.Controllers
                     ViewBag.msg = "Email or password is invalid.";
                     return View("Login");
                 }
-
 
                 if (user.RoleId == 1)
                 {
@@ -139,7 +138,7 @@ namespace ZTP.Controllers
             HttpContext.Session.Remove("answersQuestionsTest");
 
             int id = int.Parse(HttpContext.Session.GetString("id"));
-            User user = db.GetUser(id);
+            User user = this.database.GetUserById(id);
             if (difficultyNumber == 1)
             {
                 user.Difficulty = Difficulty.Easy;
@@ -154,9 +153,8 @@ namespace ZTP.Controllers
             }
             HttpContext.Session.SetString("level", user.Difficulty.ToString());
 
-            dbContext.Update(user);
-            dbContext.SaveChanges();
-
+            this.database.UpdateUser(user);
+            this.database.SaveChanges();
 
             return View("Level");
         }

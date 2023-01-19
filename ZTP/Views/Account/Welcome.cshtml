@@ -7,7 +7,7 @@
 <div class="text-center">
     @if (@ViewBag.username != null)
     {
-        <h2>Welcome @ViewBag.username</h2>
+        <h2>Welcome, @ViewBag.username</h2>
         <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Logout</a>
     }
     else

@@ -3,31 +3,28 @@
     ViewData["Title"] = "Test";
 }
 
-<h1>Test</h1>
 
-
-<h2 style="text-align: center">Question @Model.QuestionNumber/5</h2>
+<h1 style="text-align: center">Question @Model.QuestionNumber/5</h1>
 <h2 style="text-align: center">Points @ViewBag.Points/100</h2>
 
 @if (ViewBag.NoAnswer != null)
 {
     <h2 style="color: red; text-align: center;">@ViewBag.NoAnswer</h2>
 }
-
+<div class="text-center">
 @using (Html.BeginForm("Test", "Words", FormMethod.Post))
 {
     <div class="maindiv">
         <div class="panel panel-default">
             <div class="panel-body">
+                    <br />
                 @if (ViewBag.Lang == "pl")
                 {
-                    @Html.Raw("Select the word that corresponds to: " + @Model.CorrectWord.ForeignLanguageWord)
-                    ;
+                        <h3>@Html.Raw("Select the word that corresponds to:  <br/><br/>" + @Model.CorrectWord.ForeignLanguageWord)</h3>
                 }
                 else
                 {
-                    @Html.Raw("Podaj słowo odpowiadające słowu: " + @Model.CorrectWord.PolishWord)
-                    ;
+                        <h3>@Html.Raw("Podaj słowo odpowiadające słowu:  <br/><br/>" + @Model.CorrectWord.PolishWord)</h3>
                 }
 
             </div>
@@ -52,3 +49,4 @@
     @Html.HiddenFor(model=>model.Answer)
     <input type="submit" class="btn btn-success" value="Submit" style="margin-top: 20px;" id="submitButton" />
 }
+</div>
