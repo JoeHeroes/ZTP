@@ -11,8 +11,6 @@ namespace ZTP.Fascade
             this.dbContext = dbContext;
         }
 
-        
-
         public void RemoveUserWord(UserWord userWord)
         {
             this.dbContext.UserWords.Remove(userWord);
@@ -24,14 +22,13 @@ namespace ZTP.Fascade
             this.dbContext.UserWords.Update(userWord);
             this.dbContext.SaveChanges();
         }
+
         public UserWord FindUserWord(int userId, int wordId)
         {
             UserWord userWord = this.dbContext.UserWords.FirstOrDefault(x => x.UserId == userId && x.WordId == wordId);
 
             return userWord;
         }
-
-
 
         public Word FindWordAswer(List<int> userWordsIds)
         {
@@ -40,15 +37,10 @@ namespace ZTP.Fascade
             return word;
         }
 
-
-      
-
-        public List<int> FindUserWordInts (int userId)
+        public List<int> FindUserWordInts(int userId)
         {
-
-
             List<int> ints = this.dbContext.UserWords.Where(x => x.UserId == userId && !x.IsLearned).Select(x => x.Id).ToList();
-            
+
             return ints;
         }
 
@@ -83,7 +75,6 @@ namespace ZTP.Fascade
 
             return user;
         }
-
 
         public Word GetWord(int id)
         {
@@ -127,6 +118,5 @@ namespace ZTP.Fascade
         {
             this.dbContext.SaveChanges();
         }
-
     }
 }

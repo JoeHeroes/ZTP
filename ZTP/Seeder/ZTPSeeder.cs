@@ -30,11 +30,6 @@ namespace ZTP.Seeder
             {
                 new Word()
                 {
-                    PolishWord = "żołty",
-                    ForeignLanguageWord = "yellow"
-                },
-                new Word()
-                {
                     PolishWord = "zielony",
                     ForeignLanguageWord = "green"
                 },
@@ -172,6 +167,11 @@ namespace ZTP.Seeder
                 {
                     PolishWord = "muzyka",
                     ForeignLanguageWord = "music"
+                },
+                new Word()
+                {
+                    PolishWord = "sport",
+                    ForeignLanguageWord = "sport"
                 }
             };
         }

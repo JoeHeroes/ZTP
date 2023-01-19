@@ -6,6 +6,6 @@ namespace ZTP.DesignPatterns.Builder
     {
         public Word BuildWord();
 
-        public void GetResult();
+        public List<Word> GetResult();
     }
 }
