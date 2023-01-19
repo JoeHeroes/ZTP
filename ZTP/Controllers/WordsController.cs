@@ -150,23 +150,42 @@ namespace ZTP.Controllers
 
         public IActionResult ChangeLanguage(string language)
         {
-            switch (language)
+            if(language != "")
             {
-                case "pl":
-                    HttpContext.Session.Remove("lang");
-                    HttpContext.Session.SetString("lang", "pl");
-                    break;
+                switch (language)
+                {
+                    case "pl":
+                        HttpContext.Session.Remove("lang");
+                        HttpContext.Session.SetString("lang", "pl");
+                        break;
 
-                case "eng":
-                    HttpContext.Session.Remove("lang");
-                    HttpContext.Session.SetString("lang", "eng");
-                    break;
+                    case "eng":
+                        HttpContext.Session.Remove("lang");
+                        HttpContext.Session.SetString("lang", "eng");
+                        break;
+                }
+
+                HttpContext.Session.Remove("numberOfQuestionsTest");
+                HttpContext.Session.Remove("answersQuestionsTest");
+                HttpContext.Session.Remove("numberOfQuestionsLearn");
+                HttpContext.Session.Remove("answersQuestionsLearn");
+
+                if(language == "pl")
+                {
+                    TempData["Success"] = "You change language on Polish";
+                }
+                else
+                {
+                    TempData["Success"] = "You change language on English";
+                }
+                
+
             }
-
-            HttpContext.Session.Remove("numberOfQuestionsTest");
-            HttpContext.Session.Remove("answersQuestionsTest");
-            HttpContext.Session.Remove("numberOfQuestionsLearn");
-            HttpContext.Session.Remove("answersQuestionsLearn");
+            else
+            {
+                TempData["Error"] = "Something wrong with language";
+            }
+           
 
             return RedirectToAction("Lang");
         }

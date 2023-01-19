@@ -132,29 +132,37 @@ namespace ZTP.Controllers
         [Route("ChangeDifficulty")]
         public IActionResult ChangeDifficulty(int difficultyNumber)
         {
-            HttpContext.Session.Remove("numberOfQuestionsLearn");
-            HttpContext.Session.Remove("answersQuestionsLearn");
-            HttpContext.Session.Remove("numberOfQuestionsTest");
-            HttpContext.Session.Remove("answersQuestionsTest");
+            if (difficultyNumber != 0)
+            {
+                HttpContext.Session.Remove("numberOfQuestionsLearn");
+                HttpContext.Session.Remove("answersQuestionsLearn");
+                HttpContext.Session.Remove("numberOfQuestionsTest");
+                HttpContext.Session.Remove("answersQuestionsTest");
 
-            int id = int.Parse(HttpContext.Session.GetString("id"));
-            User user = this.database.GetUserById(id);
-            if (difficultyNumber == 1)
-            {
-                user.Difficulty = Difficulty.Easy;
-            }
-            else if (difficultyNumber == 2)
-            {
-                user.Difficulty = Difficulty.Normal;
-            }
-            else if (difficultyNumber == 3)
-            {
-                user.Difficulty = Difficulty.Hard;
-            }
-            HttpContext.Session.SetString("level", user.Difficulty.ToString());
+                int id = int.Parse(HttpContext.Session.GetString("id"));
+                User user = this.database.GetUserById(id);
+                if (difficultyNumber == 1)
+                {
+                    user.Difficulty = Difficulty.Easy;
+                }
+                else if (difficultyNumber == 2)
+                {
+                    user.Difficulty = Difficulty.Normal;
+                }
+                else if (difficultyNumber == 3)
+                {
+                    user.Difficulty = Difficulty.Hard;
+                }
+                HttpContext.Session.SetString("level", user.Difficulty.ToString());
+                TempData["Success"] = "You difficulty level on " + user.Difficulty.ToString();
 
-            this.database.UpdateUser(user);
-            this.database.SaveChanges();
+                this.database.UpdateUser(user);
+                this.database.SaveChanges();
+            }
+            else
+            {
+                TempData["Error"] = "Something wrong with difficulty level";
+            }
 
             return View("Level");
         }
