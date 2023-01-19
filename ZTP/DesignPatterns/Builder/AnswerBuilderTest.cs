@@ -6,15 +6,13 @@ namespace ZTP.DesignPatterns.Builder
     {
         private readonly ZTPDbContext _context;
         private int _userId;
-
-        public List<Word> AnswerWords { get; set; }
-        public Word CorrectAnswer { get; set; }
+        private List<Word> _answerWords { get; set; }
 
         public AnswerBuilderTest(ZTPDbContext context, int userId)
         {
             _context = context;
-            AnswerWords = new List<Word>();
             _userId = userId;
+            _answerWords = new List<Word>();
         }
 
         public Word BuildWord()
@@ -26,10 +24,12 @@ namespace ZTP.DesignPatterns.Builder
             return word;
         }
 
-        public void GetResult()
+        public List<Word> GetResult()
         {
-            CorrectAnswer = BuildWord();
-            AnswerWords.Add(CorrectAnswer);
+            Word correctAnswer = BuildWord();
+            _answerWords.Add(correctAnswer);
+
+            return _answerWords;
         }
     }
 }
