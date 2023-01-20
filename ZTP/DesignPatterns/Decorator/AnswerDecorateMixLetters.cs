@@ -6,21 +6,16 @@ namespace ZTP.DesignPatterns.Decorator
 {
     public class AnswerDecorateMixLetters : AnswersDecorator
     {
-        protected Word correctWord { get; set; }
-        public AnswerDecorateMixLetters(IAnswers _answers) : base(_answers)
-        {
-
-            var answersList = base.answers.GetAnswersList();
-
-            correctWord = answersList.First();
-
-        }
+        public AnswerDecorateMixLetters(IAnswers answers) : base(answers)
+        {}
         public override List<Word> GetAnswersList()
         {
+            List<Word> words = answers.GetAnswersList();
             List<Word> answerList = new List<Word>();
+            Word correctWord = words.First();
             answerList.Add(correctWord);
 
-            for (int i = 0; i < base.answers.GetAnswersList().Count - 1; i++)
+            for (int i = 0; i < words.Count - 1; i++)
             {
                 Word temp = new Word();
                 temp.PolishWord = MixLetters(correctWord.PolishWord);
