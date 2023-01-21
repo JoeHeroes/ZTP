@@ -32,29 +32,27 @@ namespace ZTP.DesignPatterns
 
         public override List<Word> GetAnswersList()
         {
+            AnswerBuilder builder = null;
             if (_contextState.CheckState() is LearningState)
             {
                 User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
                 Difficulty difficulty = user.Difficulty;
-
                 if (difficulty == Difficulty.Easy)
                 {
-                    AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context, _userId);
-                    _answers = _director.Construct(builderEasy);
-
-                    
+                    builder = new AnswerBuilderEasy(_context, _userId);
+                    _answers = _director.Construct(builder);
                 }
                 else if (difficulty == Difficulty.Normal)
                 {
-                    AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context, _userId);
-                    _answers = _director.Construct(builderNormal);
+                    builder = new AnswerBuilderNormal(_context, _userId);
+                    _answers = _director.Construct(builder);
 
                    
                 }
                 else if (difficulty == Difficulty.Hard)
                 {
-                    AnswerBuilderHard builderHard = new AnswerBuilderHard(_context, _userId);
-                    _answers = _director.Construct(builderHard);
+                    builder = new AnswerBuilderHard(_context, _userId);
+                    _answers = _director.Construct(builder);
                 }
 
                 CorrectAnswer = _answers[0];
@@ -68,8 +66,8 @@ namespace ZTP.DesignPatterns
             }
             else
             {
-                AnswerBuilderTest builderHard = new AnswerBuilderTest(_context, _userId);
-                _answers = _director.Construct(builderHard);
+                builder = new AnswerBuilderTest(_context, _userId);
+                _answers = _director.Construct(builder);
                 CorrectAnswer = _answers[0];
 
                 UserWord userWord = this.db.FindUserWord(_userId, CorrectAnswer.Id);

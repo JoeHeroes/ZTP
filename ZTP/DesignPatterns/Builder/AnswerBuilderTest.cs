@@ -2,7 +2,7 @@
 
 namespace ZTP.DesignPatterns.Builder
 {
-    public class AnswerBuilderTest : IAnswerBuilder
+    public class AnswerBuilderTest : AnswerBuilder
     {
         private readonly ZTPDbContext _context;
         private int _userId;
@@ -15,20 +15,18 @@ namespace ZTP.DesignPatterns.Builder
             _answerWords = new List<Word>();
         }
 
-        public Word BuildWord()
+        public override void BuildAnswer()
         {
             List<int> userWordsIds = _context.UserWords.Where(x => x.UserId == _userId && !x.IsLearned).Select(x => x.WordId).ToList();
 
             Word word = _context.Words.Where(x => userWordsIds.Contains(x.Id)).FirstOrDefault();
 
-            return word;
+            _answerWords.Add(word);
         }
-
-        public List<Word> GetResult()
+        public override void BuildWord()
+        {}
+        public override List<Word> GetResult()
         {
-            Word correctAnswer = BuildWord();
-            _answerWords.Add(correctAnswer);
-
             return _answerWords;
         }
     }
