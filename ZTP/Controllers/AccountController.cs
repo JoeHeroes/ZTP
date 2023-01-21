@@ -57,6 +57,15 @@ namespace ZTP.Controllers
         [Route("RegisterUser")]
         public IActionResult Register(RegisterUserDto dto)
         {
+            var user = this.database.GetUserByEmail(dto.Email);
+
+            if (user != null)
+            {
+                ViewBag.msg = "Email is taken";
+                return View("Register");
+            }
+
+
             if (dto.Password != dto.ConfirmPassword)
             {
                 ViewBag.msg = "Invalid Password";
