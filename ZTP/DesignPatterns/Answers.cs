@@ -14,14 +14,14 @@ namespace ZTP.DesignPatterns
         private readonly ZTPDbContext context;
         private int userId;
         private Context contextState;
-        private AnswerDirector director;
+        private AnswerDirector answerDirector;
         private DatabaseConnection db;
 
-        public Word CorrectAnswer { get; set; }
+        public Word correctAnswer { get; set; }
 
         public Answers(ZTPDbContext context, int userId, Context contextState)
         {
-            director = new AnswerDirector();
+            answerDirector = new AnswerDirector();
             this.context = context;
             this.userId = userId;
             this.contextState = contextState;
@@ -49,11 +49,11 @@ namespace ZTP.DesignPatterns
                 {
                     builder = new AnswerBuilderHard(context, userId);
                 }
-                answers = director.Construct(builder);
-                CorrectAnswer = answers[0];
+                answers = answerDirector.Construct(builder);
+                correctAnswer = answers[0];
                 UserWord userWord = new UserWord();
                 userWord.UserId = userId;
-                userWord.WordId = CorrectAnswer.Id;
+                userWord.WordId = correctAnswer.Id;
                 userWord.IsLearned = false;
 
                 context.UserWords.Add(userWord);
@@ -62,10 +62,10 @@ namespace ZTP.DesignPatterns
             else                                                //jeżeli tryb testu
             {
                 builder = new AnswerBuilderTest(context, userId);
-                answers = director.Construct(builder);
-                CorrectAnswer = answers[0];
+                answers = answerDirector.Construct(builder);
+                correctAnswer = answers[0];
 
-                UserWord userWord = this.db.FindUserWord(userId, CorrectAnswer.Id);
+                UserWord userWord = this.db.FindUserWord(userId, correctAnswer.Id);
                 userWord.IsLearned = true;
 
                 context.UserWords.Update(userWord);
