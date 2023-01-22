@@ -1,13 +1,14 @@
-﻿using ZTP.Models.ModelView;
+﻿using System.Collections.ObjectModel;
+using ZTP.Models.ModelView;
 
 namespace ZTP.DesignPatterns.Iterator
 {
-    public class IteratorQuestion : IIterator
+    public class QuestionsIterator : IIterator
     {
-        public List<QuestionViewModel> questions { get; set; }
-        public int numberOfQuestions;
+        public IList<QuestionViewModel> questions { get; set; } = new ObservableCollection<QuestionViewModel>();
+        public int numberOfQuestions { get; set; }
 
-        public IteratorQuestion(List<QuestionViewModel> questions)
+        public QuestionsIterator(IList<QuestionViewModel> questions)
         {
             this.questions = questions;
             numberOfQuestions = 1;

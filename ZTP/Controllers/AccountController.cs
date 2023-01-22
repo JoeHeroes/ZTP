@@ -163,7 +163,7 @@ namespace ZTP.Controllers
                     user.Difficulty = Difficulty.Hard;
                 }
                 HttpContext.Session.SetString("level", user.Difficulty.ToString());                                     
-                TempData["Success"] = "Your difficulty is now set on " + user.Difficulty.ToString();   //wysłanie powiadomienia o zmianie trudności
+                TempData["Success"] = "Your difficulty is now set to " + user.Difficulty.ToString();   //wysłanie powiadomienia o zmianie trudności
 
                 this.database.UpdateUser(user);
                 this.database.SaveChanges();

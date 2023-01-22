@@ -1,4 +1,5 @@
-﻿using ZTP.DesignPatterns.Decorator;
+﻿using System.Collections.ObjectModel;
+using ZTP.DesignPatterns.Decorator;
 using ZTP.DesignPatterns.Iterator;
 using ZTP.Models;
 using ZTP.Models.Enum;
@@ -11,9 +12,9 @@ namespace ZTP.DesignPatterns
     {
         private readonly ZTPDbContext context;
         private int userId;
-
+        IList<QuestionViewModel> questions = new ObservableCollection<QuestionViewModel>();
         public Context ContextState;
-        public IteratorQuestion Iterator { get; set; }
+        public QuestionsIterator Iterator { get; set; }
 
         public AnswersQuestions(ZTPDbContext context, int userId)
         {
@@ -23,24 +24,22 @@ namespace ZTP.DesignPatterns
 
         public void GenerateQuestions(int number)                      //metoda generująca listę pytań
         {
-            List<QuestionViewModel> Questions = new List<QuestionViewModel>();
-
             for (int i = 0; i < number; i++)
             {
                 QuestionViewModel question = GetQuestionFromDB();
                 question.QuestionNumber = i + 1;
-                Questions.Add(question);
+                questions.Add(question);
             }
 
-            Iterator = new IteratorQuestion(Questions);
+            Iterator = new QuestionsIterator(questions);
 
             if (ContextState.CheckState() is LearningState)
             {
-                Remove(Questions);
+                Remove(questions);
             }
             else
             {
-                Update(Questions);
+                Update(questions);
             }
         }
 
@@ -67,7 +66,7 @@ namespace ZTP.DesignPatterns
             if (Difficulty.Easy == user.Difficulty)                        //dla łatwego trybu -> mieszanie kolejności odpowiedzi
             {
                 questionViewModel.Answers = new AnswerDecoratorMixList(answers= new Answers(context, userId, ContextState)).GetAnswersList();
-                questionViewModel.CorrectWord = answers.CorrectAnswer;
+                questionViewModel.CorrectWord = answers.correctAnswer;
             }
             else if(Difficulty.Normal == user.Difficulty)                  //dla normalengo trybu -> mieszanie liter w odpowiedziach
             {
@@ -78,13 +77,13 @@ namespace ZTP.DesignPatterns
             {
                 answers = new Answers(context, userId, ContextState);
                 questionViewModel.Answers = answers.GetAnswersList();
-                questionViewModel.CorrectWord = answers.CorrectAnswer;
+                questionViewModel.CorrectWord = answers.correctAnswer;
             }
 
             return questionViewModel;
         }
 
-        private void Remove(List<QuestionViewModel> questions)
+        private void Remove(IList<QuestionViewModel> questions)
         {
             foreach (var question in questions)
             {
@@ -95,7 +94,7 @@ namespace ZTP.DesignPatterns
             context.SaveChanges();
         }
 
-        private void Update(List<QuestionViewModel> questions)
+        private void Update(IList<QuestionViewModel> questions)
         {
             foreach (var question in questions)
             {
