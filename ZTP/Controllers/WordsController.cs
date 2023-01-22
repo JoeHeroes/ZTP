@@ -172,7 +172,7 @@ namespace ZTP.Controllers
 
                 if(language == "pl")
                 {
-                    TempData["Success"] = "You've sufccesfully changed your questions language to English";
+                    TempData["Success"] = "You've successfully changed your questions language to English";
                 }
                 else
                 {
