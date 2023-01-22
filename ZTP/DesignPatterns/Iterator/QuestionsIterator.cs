@@ -6,7 +6,7 @@ namespace ZTP.DesignPatterns.Iterator
     public class QuestionsIterator : IIterator
     {
         public IList<QuestionViewModel> questions { get; set; } = new ObservableCollection<QuestionViewModel>();
-        public int numberOfQuestions { get; set; };
+        public int numberOfQuestions { get; set; }
 
         public QuestionsIterator(IList<QuestionViewModel> questions)
         {
