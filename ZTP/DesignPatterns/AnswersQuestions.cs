@@ -1,4 +1,5 @@
-﻿using ZTP.DesignPatterns.Decorator;
+﻿using System.Collections.ObjectModel;
+using ZTP.DesignPatterns.Decorator;
 using ZTP.DesignPatterns.Iterator;
 using ZTP.Models;
 using ZTP.Models.Enum;
@@ -13,7 +14,7 @@ namespace ZTP.DesignPatterns
         private int userId;
 
         public Context ContextState;
-        public IteratorQuestion Iterator { get; set; }
+        public QuestionsIterator Iterator { get; set; }
 
         public AnswersQuestions(ZTPDbContext context, int userId)
         {
@@ -23,24 +24,24 @@ namespace ZTP.DesignPatterns
 
         public void GenerateQuestions(int number)                      //metoda generująca listę pytań
         {
-            List<QuestionViewModel> Questions = new List<QuestionViewModel>();
+            IList<QuestionViewModel> questions = new ObservableCollection<QuestionViewModel>();
 
             for (int i = 0; i < number; i++)
             {
                 QuestionViewModel question = GetQuestionFromDB();
                 question.QuestionNumber = i + 1;
-                Questions.Add(question);
+                questions.Add(question);
             }
 
-            Iterator = new IteratorQuestion(Questions);
+            Iterator = new QuestionsIterator(questions);
 
             if (ContextState.CheckState() is LearningState)
             {
-                Remove(Questions);
+                Remove(questions);
             }
             else
             {
-                Update(Questions);
+                Update(questions);
             }
         }
 
@@ -84,7 +85,7 @@ namespace ZTP.DesignPatterns
             return questionViewModel;
         }
 
-        private void Remove(List<QuestionViewModel> questions)
+        private void Remove(IList<QuestionViewModel> questions)
         {
             foreach (var question in questions)
             {
@@ -95,7 +96,7 @@ namespace ZTP.DesignPatterns
             context.SaveChanges();
         }
 
-        private void Update(List<QuestionViewModel> questions)
+        private void Update(IList<QuestionViewModel> questions)
         {
             foreach (var question in questions)
             {
