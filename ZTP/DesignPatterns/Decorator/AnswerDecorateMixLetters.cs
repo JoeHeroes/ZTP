@@ -1,13 +1,18 @@
-﻿using ZTP.Models;
+﻿using NuGet.Packaging.Signing;
+using System.Collections.Generic;
+using ZTP.Models;
 
 namespace ZTP.DesignPatterns.Decorator
 {
-    public class AnswerDecorateMixLetters : IAnswersDecorator
+    public class AnswerDecorateMixLetters : AnswersDecorator                  //dekorator miesza litery w odpowiedziach
     {
-        public List<Word> DecorateAnswers(List<Word> words)
+        public AnswerDecorateMixLetters(IAnswers answers) : base(answers)
+        {}
+        public override List<Word> GetAnswersList()
         {
-            Word correctWord = words.First();
+            List<Word> words = answers.GetAnswersList();
             List<Word> answerList = new List<Word>();
+            Word correctWord = words.First();
             answerList.Add(correctWord);
 
             for (int i = 0; i < words.Count - 1; i++)
@@ -30,7 +35,7 @@ namespace ZTP.DesignPatterns.Decorator
             return answerList;
         }
 
-        private string MixLetters(string word)
+        private string MixLetters(string word)             //pierwsza metoda mieszająca litery
         {
             int wordLength = word.Length;
             char[] liters = new char[wordLength];
@@ -57,7 +62,7 @@ namespace ZTP.DesignPatterns.Decorator
             return word;
         }
 
-        private string MixLettersSecond(string word)
+        private string MixLettersSecond(string word)     //druga metoda mieszająca litery
         {
             int wordLength = word.Length;
             char[] liters = new char[wordLength];

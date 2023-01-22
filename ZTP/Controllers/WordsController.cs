@@ -250,7 +250,7 @@ namespace ZTP.Controllers
         {
             string answersString = HttpContext.Session.GetString("answersQuestionsLearn");
             AnswersQuestions answersQuestions = JsonConvert.DeserializeObject<AnswersQuestions>(answersString);
-            QuestionViewModel? question = answersQuestions.Iterator.Questions[model.QuestionNumber - 1];
+            QuestionViewModel? question = answersQuestions.Iterator.questions[model.QuestionNumber - 1];
             model.Answers = question.Answers;
             model.CorrectWord = question.CorrectWord;
 
@@ -364,7 +364,7 @@ namespace ZTP.Controllers
         {
             string answersString = HttpContext.Session.GetString("answersQuestionsTest");
             AnswersQuestions answersQuestions = JsonConvert.DeserializeObject<AnswersQuestions>(answersString);
-            QuestionViewModel? question = answersQuestions.Iterator.Questions[model.QuestionNumber - 1];
+            QuestionViewModel? question = answersQuestions.Iterator.questions[model.QuestionNumber - 1];
             model.Answers = question.Answers;
             model.CorrectWord = question.CorrectWord;
 

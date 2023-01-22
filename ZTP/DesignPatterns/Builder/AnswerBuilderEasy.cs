@@ -2,25 +2,28 @@
 
 namespace ZTP.DesignPatterns.Builder
 {
-    public class AnswerBuilderEasy : IAnswerBuilder
+    public class AnswerBuilderEasy : AnswerBuilder
     {
-        private readonly ZTPDbContext _context;
-        private int _userId;
-        private List<Word> _answerWords;
+        private readonly ZTPDbContext context;
+        private int userId;
+        private List<Word> answerWords;
 
         public AnswerBuilderEasy(ZTPDbContext context, int userId)
         {
-            _context = context;
-            _userId = userId;
-            _answerWords = new List<Word>();
+            this.context = context;
+            this.userId = userId;
+            answerWords = new List<Word>();
         }
-
-        public Word BuildWord()
+        public override void BuildAnswer()
         {
-            List<int> userWordsIds = _context.UserWords.Where(x => x.UserId == _userId).Select(x => x.WordId).ToList();
-            if (_answerWords.Count != 0)
+            BuildWord();
+        }
+        public override void BuildWord()
+        {
+            List<int> userWordsIds = context.UserWords.Where(x => x.UserId == userId).Select(x => x.WordId).ToList();
+            if (answerWords.Count != 0)
             {
-                userWordsIds.AddRange(_answerWords.Select(x => x.Id));
+                userWordsIds.AddRange(answerWords.Select(x => x.Id));
             }
 
             Random random = new Random();
@@ -29,29 +32,23 @@ namespace ZTP.DesignPatterns.Builder
             Word word = null;
             if (number % 3 == 0)
             {
-                word = _context.Words.Where(x => !userWordsIds.Contains(x.Id)).FirstOrDefault();
+                word = context.Words.Where(x => !userWordsIds.Contains(x.Id)).FirstOrDefault();
             }
             else if (number % 3 == 1)
             {
-                word = _context.Words.Where(x => !userWordsIds.Contains(x.Id)).Skip(2).FirstOrDefault();
+                word = context.Words.Where(x => !userWordsIds.Contains(x.Id)).Skip(2).FirstOrDefault();
             }
             else if (number % 3 == 2)
             {
-                word = _context.Words.Where(x => !userWordsIds.Contains(x.Id)).Skip(5).FirstOrDefault();
+                word = context.Words.Where(x => !userWordsIds.Contains(x.Id)).Skip(5).FirstOrDefault();
             }
 
-            return word;
+            answerWords.Add(word);
         }
 
-        public List<Word> GetResult()
+        public override List<Word> GetResult()
         {
-            Word correctAnswer = BuildWord();
-            _answerWords.Add(correctAnswer);
-            _answerWords.Add(BuildWord());
-            _answerWords.Add(BuildWord());
-            _answerWords.Add(BuildWord());
-
-            return _answerWords;
+            return answerWords;
         }
     }
 }

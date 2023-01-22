@@ -4,18 +4,18 @@ namespace ZTP.DesignPatterns.Iterator
 {
     public class IteratorQuestion : IIterator
     {
-        public List<QuestionViewModel> Questions { get; set; }
+        public List<QuestionViewModel> questions { get; set; }
         public int numberOfQuestions;
 
         public IteratorQuestion(List<QuestionViewModel> questions)
         {
-            Questions = questions;
+            this.questions = questions;
             numberOfQuestions = 1;
         }
 
         public QuestionViewModel CurrentItem()
         {
-            return Questions[numberOfQuestions - 1];
+            return questions[numberOfQuestions - 1];
         }
 
         public QuestionViewModel First()
@@ -28,7 +28,7 @@ namespace ZTP.DesignPatterns.Iterator
 
         public bool IsDone()
         {
-            return !(numberOfQuestions < Questions.Count);
+            return !(numberOfQuestions < questions.Count);
         }
 
         public QuestionViewModel Next()

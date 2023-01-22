@@ -8,83 +8,71 @@ using ZTP.State;
 
 namespace ZTP.DesignPatterns
 {
-    public class Answers
+    public class Answers : IAnswers
     {
-        private List<Word> _answers;
-        private readonly ZTPDbContext _context;
-        private int _userId;
-        private Context _contextState;
-        private AnswerDirector _director;
+        private List<Word> answers;
+        private readonly ZTPDbContext context;
+        private int userId;
+        private Context contextState;
+        private AnswerDirector director;
         private DatabaseConnection db;
 
         public Word CorrectAnswer { get; set; }
 
         public Answers(ZTPDbContext context, int userId, Context contextState)
         {
-            _director = new AnswerDirector();
-            _context = context;
-            _userId = userId;
-            _contextState = contextState;
-            this.db = new DatabaseConnection(this._context);
+            director = new AnswerDirector();
+            this.context = context;
+            this.userId = userId;
+            this.contextState = contextState;
+            this.db = new DatabaseConnection(this.context);
         }
 
-        private void DecorateAnswers(IAnswersDecorator answersDecorator)
-        {
-            _answers = answersDecorator.DecorateAnswers(_answers);
-        }
 
-        public List<Word> GetAnswersList()
+
+        public override List<Word> GetAnswersList()       //zwraca listę odpowiedzi do pytania
         {
-            if (_contextState.CheckState() is LearningState)
+            AnswerBuilder builder = null;
+            if (contextState.CheckState() is LearningState)           //jeżeli tryb nauki 
             {
-                User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
+                User user = context.Users.Where(x => x.Id == userId).FirstOrDefault();
                 Difficulty difficulty = user.Difficulty;
-
-                if (difficulty == Difficulty.Easy)
+                if (difficulty == Difficulty.Easy)                    //wybranie buildera na podstawie trudności
                 {
-                    AnswerBuilderEasy builderEasy = new AnswerBuilderEasy(_context, _userId);
-                    _answers = _director.Construct(builderEasy);
-
-                    AnswerDecoratorMixList decoratorMixList = new AnswerDecoratorMixList();
-                    DecorateAnswers(decoratorMixList);
+                    builder = new AnswerBuilderEasy(context, userId);
                 }
                 else if (difficulty == Difficulty.Normal)
                 {
-                    AnswerBuilderNormal builderNormal = new AnswerBuilderNormal(_context, _userId);
-                    _answers = _director.Construct(builderNormal);
-
-                    AnswerDecorateMixLetters decorateMixLetters = new AnswerDecorateMixLetters();
-                    DecorateAnswers(decorateMixLetters);
+                    builder = new AnswerBuilderNormal(context, userId);
                 }
                 else if (difficulty == Difficulty.Hard)
                 {
-                    AnswerBuilderHard builderHard = new AnswerBuilderHard(_context, _userId);
-                    _answers = _director.Construct(builderHard);
+                    builder = new AnswerBuilderHard(context, userId);
                 }
-
-                CorrectAnswer = _answers[0];
+                answers = director.Construct(builder);
+                CorrectAnswer = answers[0];
                 UserWord userWord = new UserWord();
-                userWord.UserId = _userId;
+                userWord.UserId = userId;
                 userWord.WordId = CorrectAnswer.Id;
                 userWord.IsLearned = false;
 
-                _context.UserWords.Add(userWord);
-                _context.SaveChanges();
+                context.UserWords.Add(userWord);
+                context.SaveChanges();
             }
-            else
+            else                                                //jeżeli tryb testu
             {
-                AnswerBuilderTest builderHard = new AnswerBuilderTest(_context, _userId);
-                _answers = _director.Construct(builderHard);
-                CorrectAnswer = _answers[0];
+                builder = new AnswerBuilderTest(context, userId);
+                answers = director.Construct(builder);
+                CorrectAnswer = answers[0];
 
-                UserWord userWord = this.db.FindUserWord(_userId, CorrectAnswer.Id);
+                UserWord userWord = this.db.FindUserWord(userId, CorrectAnswer.Id);
                 userWord.IsLearned = true;
 
-                _context.UserWords.Update(userWord);
-                _context.SaveChanges();
+                context.UserWords.Update(userWord);
+                context.SaveChanges();
             }
 
-            return _answers;
+            return answers;
         }
     }
 }
