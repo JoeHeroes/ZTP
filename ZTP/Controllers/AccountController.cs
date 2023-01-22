@@ -101,7 +101,7 @@ namespace ZTP.Controllers
         }
 
         [HttpPost]
-        [Route("LoginUser")]
+        [Route("LoginUser")]                         //metoda logująca
         public IActionResult Login(LoginDto dto)
         {
             if (ModelState.IsValid)
@@ -138,7 +138,7 @@ namespace ZTP.Controllers
             return View(dto);
         }
 
-        [Route("ChangeDifficulty")]
+        [Route("ChangeDifficulty")]                                 //zmiana trudności pytań
         public IActionResult ChangeDifficulty(int difficultyNumber)
         {
             if (difficultyNumber != 0)
@@ -162,15 +162,15 @@ namespace ZTP.Controllers
                 {
                     user.Difficulty = Difficulty.Hard;
                 }
-                HttpContext.Session.SetString("level", user.Difficulty.ToString());
-                TempData["Success"] = "You difficulty level on " + user.Difficulty.ToString();
+                HttpContext.Session.SetString("level", user.Difficulty.ToString());                                     
+                TempData["Success"] = "Your difficulty is now set on " + user.Difficulty.ToString();   //wysłanie powiadomienia o zmianie trudności
 
                 this.database.UpdateUser(user);
                 this.database.SaveChanges();
             }
             else
             {
-                TempData["Error"] = "Something wrong with difficulty level";
+                TempData["Error"] = "Something went wrong with your difficulty level";
             }
 
             return View("Level");
