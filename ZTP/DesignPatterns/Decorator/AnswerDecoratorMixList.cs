@@ -3,7 +3,7 @@ using ZTP.Models;
 
 namespace ZTP.DesignPatterns.Decorator
 {
-    public class AnswerDecoratorMixList : AnswersDecorator
+    public class AnswerDecoratorMixList : AnswersDecorator                //dekorator mieszający kolejność odpowiedzi
     {
         public AnswerDecoratorMixList(IAnswers answers) : base(answers)
         {

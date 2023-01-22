@@ -9,19 +9,19 @@ namespace ZTP.DesignPatterns
 {
     public class AnswersQuestions
     {
-        private readonly ZTPDbContext _context;
-        private int _userId;
+        private readonly ZTPDbContext context;
+        private int userId;
 
         public Context ContextState;
         public IteratorQuestion Iterator { get; set; }
 
         public AnswersQuestions(ZTPDbContext context, int userId)
         {
-            _context = context;
-            _userId = userId;
+            this.context = context;
+            this.userId = userId;
         }
 
-        public void GenerateQuestions(int number)
+        public void GenerateQuestions(int number)                      //metoda generująca listę pytań
         {
             List<QuestionViewModel> Questions = new List<QuestionViewModel>();
 
@@ -44,7 +44,7 @@ namespace ZTP.DesignPatterns
             }
         }
 
-        public QuestionViewModel GetQuestion()
+        public QuestionViewModel GetQuestion()                                  //metoda zwracająca pytanie z iteratora
         {
             if (!Iterator.IsDone())
             {
@@ -56,27 +56,27 @@ namespace ZTP.DesignPatterns
             return null;
         }
 
-        private QuestionViewModel GetQuestionFromDB()
+        private QuestionViewModel GetQuestionFromDB()                              //metoda tworząca pytania ze względu na trudność
         {
-            User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
+            User user = context.Users.Where(x => x.Id == userId).FirstOrDefault();
             Difficulty difficulty = user.Difficulty;
             Answers answers = null;
 
             QuestionViewModel questionViewModel = new QuestionViewModel();
             //względem wybranej trudności wybierz odpowiedni dekorator
-            if (Difficulty.Easy == user.Difficulty)
+            if (Difficulty.Easy == user.Difficulty)                        //dla łatwego trybu -> mieszanie kolejności odpowiedzi
             {
-                questionViewModel.Answers = new AnswerDecoratorMixList(answers= new Answers(_context, _userId, ContextState)).GetAnswersList();
+                questionViewModel.Answers = new AnswerDecoratorMixList(answers= new Answers(context, userId, ContextState)).GetAnswersList();
                 questionViewModel.CorrectWord = answers.CorrectAnswer;
             }
-            else if(Difficulty.Normal == user.Difficulty)
+            else if(Difficulty.Normal == user.Difficulty)                  //dla normalengo trybu -> mieszanie liter w odpowiedziach
             {
-                questionViewModel.Answers = new AnswerDecorateMixLetters(answers= new Answers(_context, _userId, ContextState)).GetAnswersList();
+                questionViewModel.Answers = new AnswerDecorateMixLetters(answers= new Answers(context, userId, ContextState)).GetAnswersList();
                 questionViewModel.CorrectWord = questionViewModel.Answers.First();
             }
             else if(Difficulty.Hard == user.Difficulty) 
             {
-                answers = new Answers(_context, _userId, ContextState);
+                answers = new Answers(context, userId, ContextState);
                 questionViewModel.Answers = answers.GetAnswersList();
                 questionViewModel.CorrectWord = answers.CorrectAnswer;
             }
@@ -88,23 +88,23 @@ namespace ZTP.DesignPatterns
         {
             foreach (var question in questions)
             {
-                UserWord userWord = _context.UserWords.Where(x => x.UserId == _userId && x.WordId == question.CorrectWord.Id).FirstOrDefault();
-                _context.Remove(userWord);
+                UserWord userWord = context.UserWords.Where(x => x.UserId == userId && x.WordId == question.CorrectWord.Id).FirstOrDefault();
+                context.Remove(userWord);
             }
 
-            _context.SaveChanges();
+            context.SaveChanges();
         }
 
         private void Update(List<QuestionViewModel> questions)
         {
             foreach (var question in questions)
             {
-                UserWord userWord = _context.UserWords.Where(x => x.UserId == _userId && x.WordId == question.CorrectWord.Id).FirstOrDefault();
+                UserWord userWord = context.UserWords.Where(x => x.UserId == userId && x.WordId == question.CorrectWord.Id).FirstOrDefault();
                 userWord.IsLearned = false;
-                _context.Update(userWord);
+                context.Update(userWord);
             }
 
-            _context.SaveChanges();
+            context.SaveChanges();
         }
     }
 }

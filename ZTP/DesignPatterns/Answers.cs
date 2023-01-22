@@ -10,74 +10,69 @@ namespace ZTP.DesignPatterns
 {
     public class Answers : IAnswers
     {
-        private List<Word> _answers;
-        private readonly ZTPDbContext _context;
-        private int _userId;
-        private Context _contextState;
-        private AnswerDirector _director;
+        private List<Word> answers;
+        private readonly ZTPDbContext context;
+        private int userId;
+        private Context contextState;
+        private AnswerDirector director;
         private DatabaseConnection db;
 
         public Word CorrectAnswer { get; set; }
 
         public Answers(ZTPDbContext context, int userId, Context contextState)
         {
-            _director = new AnswerDirector();
-            _context = context;
-            _userId = userId;
-            _contextState = contextState;
-            this.db = new DatabaseConnection(this._context);
+            director = new AnswerDirector();
+            this.context = context;
+            this.userId = userId;
+            this.contextState = contextState;
+            this.db = new DatabaseConnection(this.context);
         }
 
 
 
-        public override List<Word> GetAnswersList()
+        public override List<Word> GetAnswersList()       //zwraca listę odpowiedzi do pytania
         {
             AnswerBuilder builder = null;
-            if (_contextState.CheckState() is LearningState)
+            if (contextState.CheckState() is LearningState)           //jeżeli tryb nauki 
             {
-                User user = _context.Users.Where(x => x.Id == _userId).FirstOrDefault();
+                User user = context.Users.Where(x => x.Id == userId).FirstOrDefault();
                 Difficulty difficulty = user.Difficulty;
-                if (difficulty == Difficulty.Easy)
+                if (difficulty == Difficulty.Easy)                    //wybranie buildera na podstawie trudności
                 {
-                    builder = new AnswerBuilderEasy(_context, _userId);
-                    _answers = _director.Construct(builder);
+                    builder = new AnswerBuilderEasy(context, userId);
                 }
                 else if (difficulty == Difficulty.Normal)
                 {
-                    builder = new AnswerBuilderNormal(_context, _userId);
-                    _answers = _director.Construct(builder);
-
-                   
+                    builder = new AnswerBuilderNormal(context, userId);
                 }
                 else if (difficulty == Difficulty.Hard)
                 {
-                    builder = new AnswerBuilderHard(_context, _userId);
-                    _answers = _director.Construct(builder);
+                    builder = new AnswerBuilderHard(context, userId);
                 }
-
-                CorrectAnswer = _answers[0];
+                answers = director.Construct(builder);
+                CorrectAnswer = answers[0];
                 UserWord userWord = new UserWord();
-                userWord.UserId = _userId;
+                userWord.UserId = userId;
                 userWord.WordId = CorrectAnswer.Id;
                 userWord.IsLearned = false;
 
-                _context.UserWords.Add(userWord);
-                _context.SaveChanges();
+                context.UserWords.Add(userWord);
+                context.SaveChanges();
             }
-            else
+            else                                                //jeżeli tryb testu
             {
-                builder = new AnswerBuilderTest(_context, _userId);
-                _answers = _director.Construct(builder);
-                CorrectAnswer = _answers[0];
+                builder = new AnswerBuilderTest(context, userId);
+                answers = director.Construct(builder);
+                CorrectAnswer = answers[0];
 
-                UserWord userWord = this.db.FindUserWord(_userId, CorrectAnswer.Id);
+                UserWord userWord = this.db.FindUserWord(userId, CorrectAnswer.Id);
                 userWord.IsLearned = true;
 
-                _context.UserWords.Update(userWord);
-                _context.SaveChanges();
+                context.UserWords.Update(userWord);
+                context.SaveChanges();
             }
 
-            return _answers;
+            return answers;
         }
     }
 }

@@ -4,7 +4,7 @@ using ZTP.Models;
 
 namespace ZTP.DesignPatterns.Decorator
 {
-    public class AnswerDecorateMixLetters : AnswersDecorator
+    public class AnswerDecorateMixLetters : AnswersDecorator                  //dekorator miesza litery w odpowiedziach
     {
         public AnswerDecorateMixLetters(IAnswers answers) : base(answers)
         {}
@@ -35,7 +35,7 @@ namespace ZTP.DesignPatterns.Decorator
             return answerList;
         }
 
-        private string MixLetters(string word)
+        private string MixLetters(string word)             //pierwsza metoda mieszająca litery
         {
             int wordLength = word.Length;
             char[] liters = new char[wordLength];
@@ -62,7 +62,7 @@ namespace ZTP.DesignPatterns.Decorator
             return word;
         }
 
-        private string MixLettersSecond(string word)
+        private string MixLettersSecond(string word)     //druga metoda mieszająca litery
         {
             int wordLength = word.Length;
             char[] liters = new char[wordLength];
