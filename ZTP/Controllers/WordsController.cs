@@ -345,7 +345,7 @@ namespace ZTP.Controllers
             }
 
             string lang = HttpContext.Session.GetString("lang");
-            if (lang != null || lang == "eng")
+            if (lang != "pl" || lang == "eng")
             {
                 ViewBag.Lang = "eng";
             }
