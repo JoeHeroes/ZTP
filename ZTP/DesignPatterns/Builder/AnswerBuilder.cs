@@ -4,9 +4,9 @@ namespace ZTP.DesignPatterns.Builder
 {
     public abstract class AnswerBuilder
     {
-        public abstract void BuildWord();
+        public abstract void BuildWord();                 //tworzenie odpowiedzi
 
-        public abstract void BuildAnswer();
+        public abstract void BuildCorrectAnswer();        //tworzenie poprawnej odpowiedzi
         public abstract List<Word> GetResult();
     }
 }

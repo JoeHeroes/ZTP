@@ -6,7 +6,7 @@ namespace ZTP.DesignPatterns.Builder
     {
         public List<Word> Construct(AnswerBuilder builder)       //metoda tworząca odpowiedzi do pytania
         {
-            builder.BuildAnswer();
+            builder.BuildCorrectAnswer();                       //stworzenie najpierw poprawnej odpowiedzi, a następnie pozostałych
             builder.BuildWord();
             builder.BuildWord();
             builder.BuildWord();

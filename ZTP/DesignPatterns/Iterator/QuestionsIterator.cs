@@ -8,18 +8,18 @@ namespace ZTP.DesignPatterns.Iterator
         public IList<QuestionViewModel> questions { get; set; } = new ObservableCollection<QuestionViewModel>();
         public int numberOfQuestions { get; set; }
 
-        public QuestionsIterator(IList<QuestionViewModel> questions)
+        public QuestionsIterator(IList<QuestionViewModel> questions)      //inicjalizacja
         {
             this.questions = questions;
             numberOfQuestions = 1;
         }
 
-        public QuestionViewModel CurrentItem()
+        public QuestionViewModel CurrentItem()            //zwraca aktualne pytanie
         {
             return questions[numberOfQuestions - 1];
         }
 
-        public QuestionViewModel First()
+        public QuestionViewModel First()                  //zwraca pierwsze pytanie z kolekcji
         {
             numberOfQuestions = 1;
             QuestionViewModel question = CurrentItem();
@@ -27,12 +27,12 @@ namespace ZTP.DesignPatterns.Iterator
             return question;
         }
 
-        public bool IsDone()
+        public bool IsDone()                              //sprawdza czy skończyły się pytania
         {
             return !(numberOfQuestions < questions.Count);
         }
 
-        public QuestionViewModel Next()
+        public QuestionViewModel Next()                   //zwraca kolejne pytanie
         {
             numberOfQuestions++;
             QuestionViewModel question = CurrentItem();

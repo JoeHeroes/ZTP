@@ -8,7 +8,7 @@ namespace ZTP.DesignPatterns.Decorator
         public AnswerDecoratorMixList(IAnswers answers) : base(answers)
         {
         }
-        public override List<Word> GetAnswersList()
+        public override List<Word> GetAnswersList()                  //zwraca listę odpowiedzi do pytania
         {
             List<Word> words = answers.GetAnswersList();
             Random random = new Random();

@@ -8,7 +8,7 @@ namespace ZTP.DesignPatterns.Decorator
     {
         public AnswerDecorateMixLetters(IAnswers answers) : base(answers)
         {}
-        public override List<Word> GetAnswersList()
+        public override List<Word> GetAnswersList()                  //zwraca listę odpowiedzi do pytania
         {
             List<Word> words = answers.GetAnswersList();
             List<Word> answerList = new List<Word>();
