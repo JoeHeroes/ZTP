@@ -2,7 +2,7 @@
 
 namespace ZTP.DesignPatterns.Builder
 {
-    public class AnswerBuilderHard : AnswerBuilder
+    public class AnswerBuilderHard : AnswerBuilder //builder tworzy jedną odpowiedź
     {
         private readonly ZTPDbContext context;
         private int userId;
@@ -15,7 +15,7 @@ namespace ZTP.DesignPatterns.Builder
             answerWords = new List<Word>();
         }
 
-        public  override void BuildAnswer()
+        public  override void BuildCorrectAnswer()
         {
             List<int> userWordsIds = context.UserWords.Where(x => x.UserId == userId).Select(x => x.WordId).ToList();
             if (answerWords.Count != 0)

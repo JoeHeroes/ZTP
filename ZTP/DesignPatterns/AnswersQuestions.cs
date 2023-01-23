@@ -16,7 +16,7 @@ namespace ZTP.DesignPatterns
         public Context ContextState;
         public QuestionsIterator Iterator { get; set; }
 
-        public AnswersQuestions(ZTPDbContext context, int userId)
+        public AnswersQuestions(ZTPDbContext context, int userId)            //inicjalizacja 
         {
             this.context = context;
             this.userId = userId;

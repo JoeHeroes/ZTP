@@ -2,19 +2,19 @@
 
 namespace ZTP.DesignPatterns.Builder
 {
-    public class AnswerBuilderNormal : AnswerBuilder
+    public class AnswerBuilderNormal : AnswerBuilder       //builder tworzy listę odpowiedzi, gdzie każda odpowiedź jest poprawna -> Dekorator zmieni kolejność liter
     {
         private readonly ZTPDbContext context;
         private int userId;
         private List<Word> answerWords;
 
-        public AnswerBuilderNormal(ZTPDbContext context, int userId)
+        public AnswerBuilderNormal(ZTPDbContext context, int userId) 
         {
             this.context = context;
             this.userId = userId;
             answerWords = new List<Word>();
         }
-        public override void BuildAnswer()
+        public override void BuildCorrectAnswer()
         {
             List<int> userWordsIds = context.UserWords.Where(x => x.UserId == userId).Select(x => x.WordId).ToList();
             if (answerWords.Count != 0)

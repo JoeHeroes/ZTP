@@ -11,7 +11,7 @@ namespace ZTP.DesignPatterns.Decorator
             this.answers = answers;
         }
 
-        public override List<Word> GetAnswersList()
+        public override List<Word> GetAnswersList()     //zwraca listę odpowiedzi do pytania
         {
             return answers.GetAnswersList();
         }

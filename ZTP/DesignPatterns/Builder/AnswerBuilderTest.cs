@@ -2,7 +2,7 @@
 
 namespace ZTP.DesignPatterns.Builder
 {
-    public class AnswerBuilderTest : AnswerBuilder
+    public class AnswerBuilderTest : AnswerBuilder      //builder tworzy jedną odpowiedź, z nauczonych przez użytkownika słów
     {
         private readonly ZTPDbContext context;
         private int userId;
@@ -15,7 +15,7 @@ namespace ZTP.DesignPatterns.Builder
             answerWords = new List<Word>();
         }
 
-        public override void BuildAnswer()
+        public override void BuildCorrectAnswer()
         {
             List<int> userWordsIds = context.UserWords.Where(x => x.UserId == userId && !x.IsLearned).Select(x => x.WordId).ToList();
 

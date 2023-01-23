@@ -10,7 +10,7 @@ using ZTP.State;
 
 namespace ZTP.Controllers
 {
-    public class WordsController : Controller
+    public class WordsController : Controller       //kontroler odpowiedzialny za obsługę nauki i testów
     {
         private readonly Context contextState;
         private readonly DatabaseConnection database;
@@ -148,7 +148,7 @@ namespace ZTP.Controllers
             return this.database.AnyWord(id);
         }
 
-        public IActionResult ChangeLanguage(string language)
+        public IActionResult ChangeLanguage(string language)          //odpowiada za zmianę języka w nauce/testach
         {
             if(language != "")
             {
@@ -190,13 +190,13 @@ namespace ZTP.Controllers
             return RedirectToAction("Lang");
         }
 
-        public IActionResult Lang()
+        public IActionResult Lang()      //odpowiada za zmianę języka w nauce/testach
         {
             return View();
         }
 
-        public IActionResult Learn()
-        {
+        public IActionResult Learn()      //odpowiada za tryb nauki, tworzy pytania 
+        { 
             HttpContext.Session.Remove("numberOfQuestionsTest");
             HttpContext.Session.Remove("answersQuestionsTest");
             int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
@@ -246,7 +246,7 @@ namespace ZTP.Controllers
         }
 
         [HttpPost]
-        public IActionResult Learn(QuestionViewModel model)
+        public IActionResult Learn(QuestionViewModel model)     //odpowiada za tryb nauki i sprawdza poprawność odpowiedzi
         {
             string answersString = HttpContext.Session.GetString("answersQuestionsLearn");
             AnswersQuestions answersQuestions = JsonConvert.DeserializeObject<AnswersQuestions>(answersString);
@@ -264,8 +264,8 @@ namespace ZTP.Controllers
                 ViewBag.Lang = "pl";
             }
 
-            if (!string.IsNullOrEmpty(model.Answer))
-            {
+            if (!string.IsNullOrEmpty(model.Answer))  //jeżeli użytkownik zaznaczy złą odpowiedź, lub nie zaznaczy -> powtórz pytanie informująć użytkownika
+            {                                         //w przeciwnym wypadku -> oznacz słowo jako nauczone przez użytkownika i przejdź do kolejnego pytania
                 if (model.Answer == model.CorrectWord.PolishWord || model.Answer == model.CorrectWord.ForeignLanguageWord)
                 {
                     int userId = Convert.ToInt32(HttpContext.Session.GetString("id"));
@@ -291,14 +291,14 @@ namespace ZTP.Controllers
             return View(model);
         }
 
-        public IActionResult LearnEnd()
+        public IActionResult LearnEnd()                   //wyświetla widok na zakończenie nauki
         {
             HttpContext.Session.Remove("numberOfQuestionsLearn");
             HttpContext.Session.Remove("answersQuestionsLearn");
             return View();
         }
 
-        public IActionResult Test()
+        public IActionResult Test()         //odpowiada za tryb testu, tworzy pytania z słówek nauczonych przez użytkownika
         {
             HttpContext.Session.Remove("numberOfQuestionsLearn");
             HttpContext.Session.Remove("answersQuestionsLearn");
@@ -311,7 +311,7 @@ namespace ZTP.Controllers
             QuestionViewModel question;
             if (answersString == null)
             {
-                List<int> ints = this.database.FindUserWordInts(userId);
+                List<int> ints = this.database.FindUserWordInts(userId);    //jeżeli użytkownik nie nauczył się conajmniej 5 słówek -> nie pozwół na włączenie testu
                 if (ints.Count < 5)
                 {
                     HttpContext.Session.Remove("answersQuestionsTest");
@@ -360,7 +360,7 @@ namespace ZTP.Controllers
         }
 
         [HttpPost]
-        public IActionResult Test(QuestionViewModel model)
+        public IActionResult Test(QuestionViewModel model)   //odpowiada za tryb testu, sprawdza poprawność odpowiedzi i liczy punkty
         {
             string answersString = HttpContext.Session.GetString("answersQuestionsTest");
             AnswersQuestions answersQuestions = JsonConvert.DeserializeObject<AnswersQuestions>(answersString);
@@ -378,7 +378,7 @@ namespace ZTP.Controllers
                 ViewBag.Lang = "pl";
             }
 
-            if (!string.IsNullOrEmpty(model.Answer))
+            if (!string.IsNullOrEmpty(model.Answer))   //jeżeli użytkownik nie podał odpowiedzi -> nie pozwól przejść do kolejnego pytania
             {
                 if (model.Answer == model.CorrectWord.PolishWord || model.Answer == model.CorrectWord.ForeignLanguageWord)
                 {
@@ -407,7 +407,7 @@ namespace ZTP.Controllers
             return View(model);
         }
 
-        public IActionResult TestEnd()
+        public IActionResult TestEnd()                //wyświetla widok na zakończenie testu, podaje liczbę uzyskanych punktów, zmienia trudność pytań w trybie nauki wraz z postępem użytkownika
         {
             HttpContext.Session.Remove("numberOfQuestionsTest");
             HttpContext.Session.Remove("answersQuestionsTest");
@@ -435,7 +435,7 @@ namespace ZTP.Controllers
             return View();
         }
 
-        public IActionResult TestToEarly()
+        public IActionResult TestToEarly()   //zwraca widok, gdy użytkownik nie nauczył się wystarczającej liczby słówek
         {
             return View();
         }

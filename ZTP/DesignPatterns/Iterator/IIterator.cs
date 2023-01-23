@@ -2,7 +2,7 @@
 
 namespace ZTP.DesignPatterns.Iterator
 {
-    public interface IIterator
+    public interface IIterator               //interfejs dla iteratorów
     {
         public QuestionViewModel First();
 

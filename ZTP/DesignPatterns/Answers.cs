@@ -19,7 +19,7 @@ namespace ZTP.DesignPatterns
 
         public Word correctAnswer { get; set; }
 
-        public Answers(ZTPDbContext context, int userId, Context contextState)
+        public Answers(ZTPDbContext context, int userId, Context contextState)    //inicjalizacja
         {
             answerDirector = new AnswerDirector();
             this.context = context;
